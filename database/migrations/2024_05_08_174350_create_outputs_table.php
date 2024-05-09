@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('outputs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('project_id');
             $table->string('responsible', 100);
             $table->integer('quantity');
-            $table->datetime('date');
+            $table->dateTime('date');
+            $table->foreign('project_id')->references('id')->on('projects');
             $table->timestamps();
         });
     }

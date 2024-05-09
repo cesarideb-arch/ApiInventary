@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Entrance extends Model
-{
-    use HasFactory;
 
-    protected $fillable = ['project_id', 'responsible', 'quantity', 'date'];
-
-    public function project()
+    class Entrance extends Model
     {
-        return $this->belongsTo(Project::class);
+        protected $fillable = ['project_id', 'responsible', 'quantity', 'date'];
+    
+        public function project()
+        {
+            return $this->belongsTo(Project::class);
+        }
     }
-}

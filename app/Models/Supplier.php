@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
 {
-    // Use the HasFactory trait;
-    use HasFactory;
-
-    // Define the attributes that are mass assignable
     protected $fillable = [
         'article',
         'price',
@@ -19,4 +15,9 @@ class Supplier extends Model
         'email',
         'address',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

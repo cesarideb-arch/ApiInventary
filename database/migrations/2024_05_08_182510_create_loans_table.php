@@ -11,18 +11,21 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('loans', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->string('responsible', 100);
-            $table->integer('quantity');
-            $table->string('date', 100);
-            $table->integer('status');
-            $table->timestamps();
-        });
-    }
+    
+        public function up()
+        {
+            Schema::create('loans', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('product_id');
+                $table->string('responsible', 100);
+                $table->integer('quantity');
+                $table->string('date', 100);
+                $table->integer('status');
+                $table->foreign('product_id')->references('id')->on('products');
+                $table->timestamps();
+            });
+        }
+    
 
     /**
      * Reverse the migrations.
