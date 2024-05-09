@@ -14,17 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('suppliers', function (Blueprint $table) {
-           
             $table->id();
-
-            $table->string('article');
-            $table->decimal('price', 6, 2);
-            $table->string('company');
-            $table->string('phone');
-            $table->string('email');
-            $table->string('address');
-
-            $table->timestamps(); // Automatically creates 'created_at' and 'updated_at'
+            $table->string('article', 100);
+            $table->decimal('price');
+            $table->string('company', 100);
+            $table->string('phone', 100);
+            $table->string('email', 100);
+            $table->string('address', 100);
+            $table->timestamps();
         });
     }
 

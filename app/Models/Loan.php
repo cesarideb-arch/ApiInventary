@@ -7,23 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Loan extends Model
 {
-    use HasFactory;
+    protected $fillable = ['product_id', 'responsible', 'quantity', 'date', 'status'];
 
-    // Define the attributes that are mass assignable
-    protected $fillable = [
-        'product_id',
-        'responsible',
-        'quantity',
-        'date'
-    ];
-
-    // Relationship with the Product model
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(Product::class);
     }
 }
-
 
 
 
