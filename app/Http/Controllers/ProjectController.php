@@ -2,87 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Models\Project;
 
 class ProjectController extends Controller
 {
-    // GET all suppliers
+    // GET all projects
     public function index()
     {
-        $project= Project::all();
+        $projects = Project::all();
+        return response()->json($projects);
+    }
+
+    // GET a single project by id
+    public function show($id)
+    {
+        $project = Project::find($id);
+        if (!$project) {
+            return response()->json(['message' => 'Project not found'], 404);
+        }
         return response()->json($project);
     }
 
-     // GET a specific project
-     public function show($id)
-     {
-         $project = Project::find($id);
-         
-         if (!$project) {
-             return response()->json(['message' => 'Project not found'], 404);
-         }
-         
-         return response()->json($project);
-     }
-
-
-     // POST a new supplier
-   
+    // POST a new project
     public function store(Request $request)
-{
-    // Validation rules
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string|max:1000',
-        'reason_social' => 'required|string|max:255',
-        'rfc' => 'required|string|max:13',  // Assuming RFC has a specific format/length
-        'address' => 'required|string|max:255',
-        'phone' => 'required|string|max:15', // Assuming phone numbers are up to 15 digits
-        'email' => 'required|email|max:255',
-        'client_name' => 'required|string|max:255'
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string',
+            'company_name' => 'required|string|max:50',
+            'rfc' => 'required|string|max:50',
+            'address' => 'required|string|max:100',
+            'phone_number' => 'required|string|max:50',
+            'email' => 'required|string|max:50|email',
+            'client_name' => 'required|string|max:100',
+        ]);
 
-    // Create the project
-    $project = Project::create($validatedData);
-
-    // Return the newly created project and a 201 HTTP status code
-    return response()->json($project, 201);
-}
-
-
-
-   // PUT or PATCH update a supplier
-   public function update(Request $request, $id)
-   {
-       $project = Project::find($id);
-       if (!$project) {
-           return response()->json(['message' => 'Supplier not found'], 404);
-       }
-
-       $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string|max:1000',
-        'reason_social' => 'required|string|max:255',
-        'rfc' => 'required|string|max:13',  // Assuming RFC has a specific format/length
-        'address' => 'required|string|max:255',
-        'phone' => 'required|string|max:15', // Assuming phone numbers are up to 15 digits
-        'email' => 'required|email|max:255',
-        'client_name' => 'required|string|max:255'
-       ]);
-
-       $project->update($request->all());
-       return response()->json($project);
-   }
-
-// DELETE a supplier
-public function destroy($id)
-{
-    $project = Project::find($id);
-    if (!$project) {
-        return response()->json(['message' => 'Supplier not found'], 404);
+        $project = Project::create($request->all());
+        return response()->json($project, 201);
     }
-    $project->delete();
-    return response()->json(['message' => 'Supplier deleted successfully']);
+
+    // PUT or PATCH update a project
+    public function update(Request $request, $id)
+    {
+        $project = Project::find($id);
+        if (!$project) {
+            return response()->json(['message' => 'Project not found'], 404);
+        }
+
+        $request->validate([
+            'name' => 'string|max:100',
+            'description' => 'nullable|string',
+            'company_name' => 'string|max:50',
+            'rfc' => 'string|max:50',
+            'address' => 'string|max:100',
+            'phone_number' => 'string|max:50',
+            'email' => 'string|max:50|email',
+            'client_name' => 'string|max:100',
+        ]);
+
+        $project->update($request->all());
+        return response()->json($project);
+    }
+
+    // DELETE a project
+    public function destroy($id)
+    {
+        $project = Project::find($id);
+        if (!$project) {
+            return response()->json(['message' => 'Project not found'], 404);
+        }
+        $project->delete();
+        return response()->json(['message' => 'Project deleted successfully']);
+    }
 }
-}
+

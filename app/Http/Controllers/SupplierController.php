@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\Schema; // Necesario para usar Schema
 
 class SupplierController extends Controller
 {
@@ -32,7 +33,8 @@ class SupplierController extends Controller
             'price' => 'required|numeric',
             'company' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
-            'email' => 'required|email|max:255'
+            'email' => 'required|email|max:255',
+            'address' => 'required|string|max:100' // Nueva validación para el campo address
         ]);
 
         $supplier = Supplier::create($request->all());
@@ -52,7 +54,8 @@ class SupplierController extends Controller
             'price' => 'numeric',
             'company' => 'string|max:255',
             'phone' => 'string|max:255',
-            'email' => 'email|max:255'
+            'email' => 'email|max:255',
+            'address' => 'string|max:100' // Nueva validación para el campo address
         ]);
 
         $supplier->update($request->all());
@@ -70,3 +73,4 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier deleted successfully']);
     }
 }
+

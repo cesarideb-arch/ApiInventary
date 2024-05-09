@@ -6,10 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Output extends Model
 {
-    protected $fillable = ['project_id', 'responsible', 'quantity', 'date'];
+    protected $fillable = ['project_id', 'responsible', 'quantity', 'date', 'product_id', 'description'];
 
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }

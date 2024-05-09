@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
     class Entrance extends Model
     {
-        protected $fillable = ['project_id', 'responsible', 'quantity', 'date'];
+        protected $fillable = ['project_id', 'responsible', 'quantity', 'date', 'description', 'product_id'];
     
         public function project()
         {
             return $this->belongsTo(Project::class);
+        }
+        public function product()
+        {
+            return $this->belongsTo(Product::class);
         }
     }
