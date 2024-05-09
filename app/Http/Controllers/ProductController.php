@@ -31,24 +31,24 @@ class ProductController extends Controller
 {
     // Validar los datos de entrada
     $validated = $request->validate([
-        'name' => 'required|string|max:100',
-        'model' => 'nullable|string|max:100',
-        'measurement_unit' => 'nullable|string|max:10',
-        'brand' => 'nullable|string|max:100',
+        'name' => 'required|string|max:50',
+        'model' => 'nullable|string|max:50',
+        'unit_measure' => 'nullable|string|max:15',
+        'brand' => 'nullable|string|max:50',
         'quantity' => 'required|integer',
         'description' => 'nullable|string',
         'price' => 'required|numeric|between:0,999999.99',
-        'product_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
-        'category_id' => 'nullable|exists:categories,id',
-        'supplier_id' => 'nullable|exists:suppliers,id',
-        'serie' => 'nullable|string|max:100',
-        'observations' => 'nullable|string|max:255',
-        'location' => 'nullable|string|max:100',
+        'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
+        'provider' => 'nullable|string|max:50',
+        'serie' => 'nullable|string|max:40',
+        'observations' => 'nullable|string|max:50',
+        'location' => 'nullable|string|max:20',
+        'category' => 'nullable|string|max:20',
     ]);
 
     // Comprobar si la solicitud contiene una imagen
-    if ($request->hasFile('product_image')) {
-        $file = $request->file('product_image');
+    if ($request->hasFile('profile_image')) {
+        $file = $request->file('profile_image');
         $extension = $file->getClientOriginalExtension();
         $new_name = time() . '_1.' . $extension;
         
@@ -58,8 +58,8 @@ class ProductController extends Controller
         // Ruta completa de la imagen
         $imagePath = 'images/' . $new_name;
         
-        // Asignar la ruta de la imagen al campo product_image
-        $validated['product_image'] = $imagePath;
+        // Asignar la ruta de la imagen al campo profile_image
+        $validated['profile_image'] = $imagePath;
     }
 
     // Crear el producto utilizando los datos validados
@@ -95,54 +95,54 @@ class ProductController extends Controller
    
    
      public function update(Request $request, $id)
-{
-    // Buscar el producto a actualizar
-    $product = Product::findOrFail($id);
-
-    // Validar los datos de entrada
-    $validated = $request->validate([
-        'name' => 'required|string|max:100',
-        'model' => 'nullable|string|max:100',
-        'measurement_unit' => 'nullable|string|max:10',
-        'brand' => 'nullable|string|max:100',
-        'quantity' => 'required|integer',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric|between:0,999999.99',
-        'product_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
-        'category_id' => 'nullable|exists:categories,id',
-        'supplier_id' => 'nullable|exists:suppliers,id',
-        'serie' => 'nullable|string|max:100',
-        'observations' => 'nullable|string|max:255',
-        'location' => 'nullable|string|max:100',
-    ]);
-
-    // Comprobar si la solicitud contiene una imagen
-    if ($request->hasFile('product_image')) {
-        if (File::exists(public_path($product->product_image))) {
-            // Eliminar la imagen anterior si existe
-            File::delete(public_path($product->product_image));
-        }
-
-        $file = $request->file('product_image');
-        $extension = $file->getClientOriginalExtension();
-        $new_name = time() . '_1.' . $extension;
-
-        // Mover la nueva imagen a la carpeta public/images
-        $file->move(public_path('images'), $new_name);
-
-        // Ruta completa de la nueva imagen
-        $imagePath = 'images/' . $new_name;
-
-        // Asignar la ruta de la nueva imagen al campo product_image
-        $validated['product_image'] = $imagePath;
-    }
-
-    // Actualizar el producto con los datos validados
-    $product->update($validated);
-
-    // Devolver una respuesta JSON con el producto actualizado
-    return response()->json($product, 200);
-}
+     {
+         // Buscar el producto a actualizar
+         $product = Product::findOrFail($id);
+     
+         // Validar los datos de entrada
+         $validated = $request->validate([
+             'name' => 'required|string|max:50',
+             'model' => 'nullable|string|max:50',
+             'unit_measure' => 'nullable|string|max:15',
+             'brand' => 'nullable|string|max:50',
+             'quantity' => 'required|integer',
+             'description' => 'nullable|string',
+             'price' => 'required|numeric|between:0,999999.99',
+             'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
+             'provider' => 'nullable|string|max:50',
+             'serie' => 'nullable|string|max:40',
+             'observations' => 'nullable|string|max:50',
+             'location' => 'nullable|string|max:20',
+             'category' => 'nullable|string|max:20',
+         ]);
+     
+         // Comprobar si la solicitud contiene una imagen
+         if ($request->hasFile('profile_image')) {
+             if (File::exists(public_path($product->profile_image))) {
+                 // Eliminar la imagen anterior si existe
+                 File::delete(public_path($product->profile_image));
+             }
+     
+             $file = $request->file('profile_image');
+             $extension = $file->getClientOriginalExtension();
+             $new_name = time() . '_1.' . $extension;
+     
+             // Mover la nueva imagen a la carpeta public/images
+             $file->move(public_path('images'), $new_name);
+     
+             // Ruta completa de la nueva imagen
+             $imagePath = 'images/' . $new_name;
+     
+             // Asignar la ruta de la nueva imagen al campo profile_image
+             $validated['profile_image'] = $imagePath;
+         }
+     
+         // Actualizar el producto con los datos validados
+         $product->update($validated);
+     
+         // Devolver una respuesta JSON con el producto actualizado
+         return response()->json($product, 200);
+     }
 
     /**
      * Elimina un producto existente según su ID.
