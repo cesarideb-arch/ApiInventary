@@ -30,21 +30,23 @@ class ProductController extends Controller
     public function store(Request $request)
 {
     // Validar los datos de entrada
-    $validated = $request->validate([
-        'name' => 'required|string|max:50',
-        'model' => 'nullable|string|max:50',
-        'measurement_unit' => 'nullable|string|max:15',
-        'brand' => 'nullable|string|max:50',
-        'quantity' => 'required|integer',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric|between:0,999999.99',
-        'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
-        'provider' => 'nullable|string|max:50',
-        'serie' => 'nullable|string|max:40',
-        'observations' => 'nullable|string|max:50',
-        'location' => 'nullable|string|max:20',
-        'category' => 'nullable|string|max:20',
-    ]);
+ // Validar los datos de entrada
+ $validated = $request->validate([
+    'name' => 'required|string|max:50',
+    'model' => 'nullable|string|max:50',
+    'measurement_unit' => 'nullable|string|max:15',
+    'brand' => 'nullable|string|max:50',
+    'quantity' => 'required|integer',
+    'description' => 'nullable|string',
+    'price' => 'required|numeric|between:0,999999.99',
+    'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
+    'serie' => 'nullable|string|max:40',
+    'observations' => 'nullable|string|max:50',
+    'location' => 'nullable|string|max:20',
+    'category_id' => 'required|exists:categories,id',
+    'supplier_id' => 'required|exists:suppliers,id',
+]);
+   
 
     // Comprobar si la solicitud contiene una imagen
     if ($request->hasFile('profile_image')) {
@@ -101,20 +103,20 @@ class ProductController extends Controller
      
          // Validar los datos de entrada
          $validated = $request->validate([
-             'name' => 'required|string|max:50',
-             'model' => 'nullable|string|max:50',
-             'measurement_unit' => 'nullable|string|max:15',
-             'brand' => 'nullable|string|max:50',
-             'quantity' => 'required|integer',
-             'description' => 'nullable|string',
-             'price' => 'required|numeric|between:0,999999.99',
-             'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
-             'provider' => 'nullable|string|max:50',
-             'serie' => 'nullable|string|max:40',
-             'observations' => 'nullable|string|max:50',
-             'location' => 'nullable|string|max:20',
-             'category' => 'nullable|string|max:20',
-         ]);
+            'name' => 'required|string|max:50',
+            'model' => 'nullable|string|max:50',
+            'measurement_unit' => 'nullable|string|max:15',
+            'brand' => 'nullable|string|max:50',
+            'quantity' => 'required|integer',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|between:0,999999.99',
+            'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg', // Asegúrate de que el archivo tiene un tamaño máximo de 2MB y es de tipo imagen (jpeg, png, gif, svg)
+            'serie' => 'nullable|string|max:40',
+            'observations' => 'nullable|string|max:50',
+            'location' => 'nullable|string|max:20',
+            'category_id' => 'required|exists:categories,id',
+            'supplier_id' => 'required|exists:suppliers,id',
+        ]);
      
          // Comprobar si la solicitud contiene una imagen
          if ($request->hasFile('profile_image')) {

@@ -23,11 +23,13 @@ return new class extends Migration
         $table->text('description')->nullable();
         $table->decimal('price', 8, 2);
         $table->string('profile_image')->nullable();
-        $table->string('provider')->nullable();
         $table->string('serie')->nullable();
         $table->string('observations', 50)->nullable();
-        $table->string('category')->nullable();
         $table->string('location')->nullable();
+        $table->unsignedBigInteger('category_id');
+        $table->unsignedBigInteger('supplier_id');
+        $table->foreign('category_id')->references('id')->on('categories');
+        $table->foreign('supplier_id')->references('id')->on('suppliers');
         $table->timestamps(); // Esto creará automáticamente las columnas 'created_at' y 'updated_at'
     });
 }
