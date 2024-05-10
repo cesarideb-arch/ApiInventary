@@ -84,6 +84,7 @@ Route::get('/loans', [LoanController::class, 'index']);
 Route::get('/loans/{id}', [LoanController::class, 'show']);
 Route::put('/loans/{id}', [LoanController::class, 'update']);
 Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
+Route::put('/comeBackLoan/{id}', [LoanController::class, 'comeBackLoan']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
