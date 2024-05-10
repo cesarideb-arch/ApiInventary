@@ -40,35 +40,4 @@ class EntranceController extends Controller
         return response()->json($entrance, 201);
     }
 
-    // PUT or PATCH update an entrance
-    public function update(Request $request, $id)
-    {
-        $entrance = Entrance::find($id);
-        if (!$entrance) {
-            return response()->json(['message' => 'Entrance not found'], 404);
-        }
-
-        $request->validate([
-            'project_id' => 'exists:projects,id',
-            'product_id' => 'exists:products,id',
-            'responsible' => 'string|max:100',
-            'quantity' => 'integer',
-            'description' => 'nullable|string|max:100',
-            'date' => 'date_format:Y-m-d H:i:s'
-        ]);
-
-        $entrance->update($request->all());
-        return response()->json($entrance);
-    }
-
-    // DELETE an entrance
-    public function destroy($id)
-    {
-        $entrance = Entrance::find($id);
-        if (!$entrance) {
-            return response()->json(['message' => 'Entrance not found'], 404);
-        }
-        $entrance->delete();
-        return response()->json(['message' => 'Entrance deleted successfully']);
-    }
 }

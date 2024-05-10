@@ -33,6 +33,10 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::put('/products/{id}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
+//Rutas de perzolizacion    
+Route::get('/getCategoryProducts', [ProductController::class, 'getCategoryProducts']);
+Route::get('/getprojects', [ProductController::class, 'getprojects']);
+
 //Rutas de productos
 Route::get('/suppliers', [SupplierController::class, 'index']);
 Route::post('/suppliers', [SupplierController::class, 'store']);
