@@ -11,7 +11,7 @@ class SupplierController extends Controller
     // GET all suppliers
     public function index()
     {
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::latest()->get();
         return response()->json($suppliers);
     }
 

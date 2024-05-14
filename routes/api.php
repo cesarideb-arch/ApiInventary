@@ -32,6 +32,7 @@ Route::post('/products', [ProductController::class, 'store']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::put('/products/{id}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+Route::get('/getCountProducts', [ProductController::class, 'getCountProducts']);
 
 //Rutas de perzolizacion    
 Route::get('/getCategoryProducts', [ProductController::class, 'getCategoryProducts']);
@@ -85,6 +86,7 @@ Route::get('/loans/{id}', [LoanController::class, 'show']);
 Route::put('/loans/{id}', [LoanController::class, 'update']);
 Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
 Route::put('/comeBackLoan/{id}', [LoanController::class, 'comeBackLoan']);
+Route::get('/getCount', [LoanController::class, 'getCount']);
 
 
 Route::middleware('auth:sanctum')->group(function () {

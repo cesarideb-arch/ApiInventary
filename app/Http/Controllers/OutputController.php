@@ -9,7 +9,7 @@ use App\Models\Product;
 class OutputController extends Controller {
     // GET all outputs
     public function index() {
-        $outputs = Output::with(['project', 'product'])->get();
+        $outputs = Output::with(['project', 'product'])->latest()->get();
         return response()->json($outputs);
     }
 

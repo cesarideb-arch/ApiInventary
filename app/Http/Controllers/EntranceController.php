@@ -9,9 +9,10 @@ use App\Models\Product;
 class EntranceController extends Controller {
     // GET all entrances
     public function index() {
-        $entrances = Entrance::with(['project', 'product'])->get();
+        $entrances = Entrance::with(['project', 'product'])->latest()->get();
         return response()->json($entrances);
     }
+    
 
     // GET a single entrance by id
     public function show($id) {

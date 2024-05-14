@@ -12,9 +12,15 @@ class LoanController extends Controller
 
 
     public function index() {
-        $loans = Loan::with(['product'])->get();
+        $loans = Loan::with(['product'])->latest()->get();
         return response()->json($loans);
     }
+
+    public function getCount() {
+        $count = Loan::where('status', 1)->count();
+        return response()->json(['count' => $count]);
+    }
+    
     public function store(Request $request)
     {
         $request->validate([

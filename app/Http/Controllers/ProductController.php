@@ -18,9 +18,18 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $products = Product::all();
+        $products = Product::latest()->get();
         return response()->json($products, 200);
     }
+
+    public function getCountProducts() {
+        $count = Product::count();
+        return response()->json(['count' => $count], 200);
+    }
+
+
+
+
 
 
     public function getCategoryProducts() {
