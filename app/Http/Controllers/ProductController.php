@@ -29,12 +29,9 @@ class ProductController extends Controller {
 
 
 
-
-
-
     public function getCategoryProducts() {
-        $categories = Category::all();
-        $suppliers = Supplier::all();
+        $categories = Category::orderBy('name')->get();
+        $suppliers = Supplier::orderBy('company')->get();
 
         return response()->json([
             'categories' => $categories,
@@ -44,7 +41,7 @@ class ProductController extends Controller {
 
 
     public function getprojects() {
-        $projects = Project::all();
+        $projects = Project::orderBy('name')->get();
 
         return response()->json($projects,200);
     }
