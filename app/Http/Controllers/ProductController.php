@@ -27,8 +27,6 @@ class ProductController extends Controller {
         return response()->json(['count' => $count], 200);
     }
 
-
-
     public function getCategoryProducts() {
         $categories = Category::orderBy('name')->get();
         $suppliers = Supplier::orderBy('company')->get();
@@ -43,7 +41,35 @@ class ProductController extends Controller {
     public function getprojects() {
         $projects = Project::orderBy('name')->get();
 
-        return response()->json($projects,200);
+        return response()->json($projects, 200);
+    }
+
+    public function SearchGet(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+        
+
+        $categories = Category::orderBy('id')->get();
+        $suppliers = Supplier::orderBy('id')->get();
+
+        // Si el parámetro de búsqueda está presente, filtrar los productos
+        if ($search) {
+            $products = Product::join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
+            ->where('products.name', 'LIKE', "%$search%")
+            ->orWhere('products.category_id', 'LIKE', "%$search%")
+            ->orWhere('products.description', 'LIKE', "%$search%")
+            ->orWhere('categories.name', 'LIKE', "%$search%")
+            ->orWhere('suppliers.company', 'LIKE', "%$search%")
+            ->select('products.*') // Asegúrate de seleccionar solo las columnas de la tabla products
+            ->latest('products.created_at') // Asegúrate de ordenar por la columna de fecha de creación de la tabla products
+            ->get();
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todos los productos
+            //   echo "no hay busqueda";
+            $products = Product::latest()->get();
+        }
+        return response()->json($products, 200);
     }
 
     /**
@@ -54,47 +80,47 @@ class ProductController extends Controller {
      */
     public function store(Request $request) {
         // Validar los datos de entrada
-       try {
-        $validated = $request->validate([
-            'name' => 'required|string|max:50',
-            'model' => 'nullable|string|max:50',
-            'measurement_unit' => 'nullable|string|max:15',
-            'brand' => 'nullable|string|max:50',
-            'quantity' => 'required|integer',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|between:0,999999.99',
-            'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg',
-            'serie' => 'nullable|string|max:40',
-            'observations' => 'nullable|string|max:50',
-            'location' => 'nullable|string|max:20',
-            'category_id' => 'required|exists:categories,id',
-            'supplier_id' => 'required|exists:suppliers,id',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:50',
+                'model' => 'nullable|string|max:50',
+                'measurement_unit' => 'nullable|string|max:15',
+                'brand' => 'nullable|string|max:50',
+                'quantity' => 'required|integer',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|between:0,999999.99',
+                'profile_image' => 'nullable|file|max:2048|mimes:jpeg,png,gif,svg',
+                'serie' => 'nullable|string|max:40',
+                'observations' => 'nullable|string|max:50',
+                'location' => 'nullable|string|max:20',
+                'category_id' => 'required|exists:categories,id',
+                'supplier_id' => 'required|exists:suppliers,id',
+            ]);
 
-        // Comprobar si la solicitud contiene una imagen
-        if ($request->hasFile('profile_image')) {
-            $file = $request->file('profile_image');
-            $extension = $file->getClientOriginalExtension();
-            $new_name = time() . '_1.' . $extension;
+            // Comprobar si la solicitud contiene una imagen
+            if ($request->hasFile('profile_image')) {
+                $file = $request->file('profile_image');
+                $extension = $file->getClientOriginalExtension();
+                $new_name = time() . '_1.' . $extension;
 
-            // Mover la nueva imagen a la carpeta public/images
-            $file->move(public_path('images'), $new_name);
+                // Mover la nueva imagen a la carpeta public/images
+                $file->move(public_path('images'), $new_name);
 
-            // Ruta completa de la nueva imagen
-            $imagePath = 'images/' . $new_name;
+                // Ruta completa de la nueva imagen
+                $imagePath = 'images/' . $new_name;
 
-            // Asignar la ruta de la nueva imagen al campo profile_image
-            $validated['profile_image'] = $imagePath;
+                // Asignar la ruta de la nueva imagen al campo profile_image
+                $validated['profile_image'] = $imagePath;
+            }
+
+            // Crear un nuevo producto con los datos validados
+            $product = Product::create($validated);
+
+            // Devolver una respuesta JSON con el producto creado
+            return response()->json($product, 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
-
-        // Crear un nuevo producto con los datos validados
-        $product = Product::create($validated);
-
-        // Devolver una respuesta JSON con el producto creado
-        return response()->json($product, 201);
-       } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 400);
-       }
     }
     /**
      * Devuelve un producto específico según su ID.

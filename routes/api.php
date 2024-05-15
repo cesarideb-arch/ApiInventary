@@ -36,7 +36,9 @@ Route::get('/getCountProducts', [ProductController::class, 'getCountProducts']);
 
 //Rutas de perzolizacion    
 Route::get('/getCategoryProducts', [ProductController::class, 'getCategoryProducts']);
-Route::get('/getprojects', [ProductController::class, 'getprojects']);
+Route::get('/search', [ProductController::class, 'SearchGet']);
+
+
 
 //Rutas de productos
 Route::get('/suppliers', [SupplierController::class, 'index']);
