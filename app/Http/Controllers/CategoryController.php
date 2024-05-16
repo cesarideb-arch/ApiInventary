@@ -14,6 +14,36 @@ class CategoryController extends Controller
         return response()->json($categories);
     }
 
+
+
+    public function SearchCategory(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+    
+        // Si el parámetro de búsqueda está presente, filtrar las categorías
+        if ($search) {
+            $categories = Category::where('name', 'like', '%' . $search . '%')
+                                  ->orWhere('description', 'like', '%' . $search . '%')
+                                  ->get();
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todas las categorías
+            $categories = Category::all();
+        }
+    
+        return response()->json($categories);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     // GET a single category by id
     public function show($id)
     {

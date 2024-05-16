@@ -18,9 +18,10 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $products = Product::latest()->get();
+        $products = Product::with(['category', 'Supplier'])->latest()->get();
         return response()->json($products, 200);
     }
+
 
     public function getCountProducts() {
         $count = Product::count();
@@ -47,28 +48,29 @@ class ProductController extends Controller {
     public function SearchGet(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
-        
-
         $categories = Category::orderBy('id')->get();
         $suppliers = Supplier::orderBy('id')->get();
 
         // Si el parámetro de búsqueda está presente, filtrar los productos
         if ($search) {
-            $products = Product::join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
-            ->where('products.name', 'LIKE', "%$search%")
-            ->orWhere('products.category_id', 'LIKE', "%$search%")
-            ->orWhere('products.description', 'LIKE', "%$search%")
-            ->orWhere('categories.name', 'LIKE', "%$search%")
-            ->orWhere('suppliers.company', 'LIKE', "%$search%")
-            ->select('products.*') // Asegúrate de seleccionar solo las columnas de la tabla products
-            ->latest('products.created_at') // Asegúrate de ordenar por la columna de fecha de creación de la tabla products
-            ->get();
+            $products = Product::with(['category', 'supplier']) // Cargar las relaciones category y supplier
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
+                ->where('products.name', 'LIKE', "%$search%")
+                ->orWhere('products.category_id', 'LIKE', "%$search%")
+                ->orWhere('products.description', 'LIKE', "%$search%")
+                ->orWhere('categories.name', 'LIKE', "%$search%")
+                ->orWhere('suppliers.company', 'LIKE', "%$search%")
+                ->select('products.*') // Seleccionar solo las columnas de la tabla products
+                ->latest('products.created_at') // Ordenar por la columna de fecha de creación de la tabla products
+                ->get();
         } else {
-            // Si no hay parámetro de búsqueda, obtener todos los productos
-            //   echo "no hay busqueda";
-            $products = Product::latest()->get();
+            $products = Product::with(['category', 'supplier']) // Cargar las relaciones category y supplier
+                ->latest('products.created_at') // Ordenar por la columna de fecha de creación de la tabla products
+                ->get();
         }
+
+
         return response()->json($products, 200);
     }
 

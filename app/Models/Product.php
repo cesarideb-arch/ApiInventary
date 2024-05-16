@@ -16,13 +16,13 @@ class Product extends Model
     // Relación con la categoría
     public function category()
     {
-        return $this->belongsTo('App\Category');
+        return $this->belongsTo(category::class);
     }
 
     // Relación con el proveedor
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier');
+        return $this->belongsTo(Supplier::class);
     }
 }
 
