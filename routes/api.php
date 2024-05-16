@@ -33,7 +33,7 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::put('/products/{id}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 Route::get('/getCountProducts', [ProductController::class, 'getCountProducts']);
-
+Route::get('/getprojects', [ProductController::class, 'getprojects']);
 //Rutas de perzolizacion    
 Route::get('/getCategoryProducts', [ProductController::class, 'getCategoryProducts']);
 Route::get('/search', [ProductController::class, 'SearchGet']);
