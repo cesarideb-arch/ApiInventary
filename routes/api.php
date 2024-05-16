@@ -83,6 +83,8 @@ Route::get('/outputs', [OutputController::class, 'index']);
 Route::get('/outputs/{id}', [OutputController::class, 'show']);
 Route::put('/outputs/{id}', [OutputController::class, 'update']);
 Route::delete('/outputs/{id}', [OutputController::class, 'destroy']);
+Route::get('/searchOutput', [OutputController::class, 'SearchOutput']);
+
 
 
 // Add Loans
@@ -93,6 +95,7 @@ Route::put('/loans/{id}', [LoanController::class, 'update']);
 Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
 Route::put('/comeBackLoan/{id}', [LoanController::class, 'comeBackLoan']);
 Route::get('/getCount', [LoanController::class, 'getCount']);
+Route::get('/searchLoan', [LoanController::class, 'SearchLoan']);
 
 
 Route::middleware('auth:sanctum')->group(function () {

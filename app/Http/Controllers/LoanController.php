@@ -16,6 +16,43 @@ class LoanController extends Controller
         return response()->json($loans);
     }
 
+    public function SearchLoan(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+    
+        // Crear la consulta base con las relaciones
+        $query = Loan::with(['product'])
+                     ->join('products', 'loans.product_id', '=', 'products.id')
+                     ->select('loans.*');
+    
+        // Si el parámetro de búsqueda está presente, filtrar las entradas
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('loans.responsible', 'like', "%{$search}%")
+                  ->orWhere('loans.quantity', 'like', "%{$search}%")
+                  ->orWhere('loans.created_at', 'like', "%{$search}%")
+                  ->orWhere('loans.status', 'like', "%{$search}%")
+                  ->orWhere('products.name', 'like', "%{$search}%")
+                  ->orWhere('loans.product_id', 'like', "%{$search}%");
+            });
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todos los préstamos
+            $loans = Loan::with(['product'])->get();
+            return response()->json($loans);
+        }
+    
+        // Ejecutar la consulta si hay un parámetro de búsqueda
+        $loans = $query->get();
+    
+        return response()->json($loans);
+    }
+
+
+
+
+
+
+
     public function getCount() {
         $count = Loan::where('status', 1)->count();
         return response()->json(['count' => $count]);

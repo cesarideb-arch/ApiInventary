@@ -13,6 +13,47 @@ class OutputController extends Controller {
         return response()->json($outputs);
     }
 
+    public function SearchOutput(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+    
+        // Crear la consulta base con las relaciones
+        $query = Output::with(['project', 'product'])
+                        ->join('projects', 'outputs.project_id', '=', 'projects.id')
+                        ->join('products', 'outputs.product_id', '=', 'products.id')
+                        ->select('outputs.*');
+    
+        // Si el parámetro de búsqueda está presente, filtrar las entradas
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('outputs.responsible', 'like', "%{$search}%")
+                  ->orWhere('outputs.quantity', 'like', "%{$search}%")
+                  ->orWhere('outputs.description', 'like', "%{$search}%")
+                  ->orWhere('outputs.created_at', 'like', "%{$search}%")
+                  ->orWhere('projects.name', 'like', "%{$search}%")
+                  ->orWhere('products.name', 'like', "%{$search}%")
+                  ->orWhere('outputs.project_id', 'like', "%{$search}%")
+                  ->orWhere('outputs.product_id', 'like', "%{$search}%");
+            });
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todas las salidas
+            $outputs = Output::with(['project', 'product'])->get();
+            return response()->json($outputs);
+        }
+    
+        // Ejecutar la consulta si hay un parámetro de búsqueda
+        $outputs = $query->get();
+    
+        return response()->json($outputs);
+    }
+    
+
+
+
+
+
+
+
     // GET a single output by id
     public function show($id) {
         $output = Output::with(['project', 'product'])->find($id);
