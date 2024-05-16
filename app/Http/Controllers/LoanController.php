@@ -47,11 +47,6 @@ class LoanController extends Controller {
     }
 
 
-
-
-
-
-
     public function getCount() {
         $count = Loan::where('status', 1)->count();
         return response()->json(['count' => $count]);
