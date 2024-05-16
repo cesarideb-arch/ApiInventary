@@ -58,6 +58,7 @@ class ProductController extends Controller {
                 ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
                 ->where('products.name', 'LIKE', "%$search%")
                 ->orWhere('products.category_id', 'LIKE', "%$search%")
+                ->orWhere('products.price', 'LIKE', "%$search%")
                 ->orWhere('products.description', 'LIKE', "%$search%")
                 ->orWhere('categories.name', 'LIKE', "%$search%")
                 ->orWhere('suppliers.company', 'LIKE', "%$search%")
@@ -149,10 +150,10 @@ class ProductController extends Controller {
      */
 
 
-    public function update(Request $request, $id) {
+     public function update(Request $request, $id) {
         // Buscar el producto a actualizar
         $product = Product::findOrFail($id);
-
+    
         // Validar los datos de entrada
         $validated = $request->validate([
             'name' => 'required|string|max:50',
@@ -169,34 +170,36 @@ class ProductController extends Controller {
             'category_id' => 'required|exists:categories,id',
             'supplier_id' => 'required|exists:suppliers,id',
         ]);
-
+    
         // Comprobar si la solicitud contiene una imagen
         if ($request->hasFile('profile_image')) {
+            // Eliminar la imagen anterior si existe
             if (File::exists(public_path($product->profile_image))) {
-                // Eliminar la imagen anterior si existe
                 File::delete(public_path($product->profile_image));
             }
-
+    
+            // Procesar la nueva imagen
             $file = $request->file('profile_image');
             $extension = $file->getClientOriginalExtension();
             $new_name = time() . '_1.' . $extension;
-
+    
             // Mover la nueva imagen a la carpeta public/images
             $file->move(public_path('images'), $new_name);
-
+    
             // Ruta completa de la nueva imagen
             $imagePath = 'images/' . $new_name;
-
+    
             // Asignar la ruta de la nueva imagen al campo profile_image
             $validated['profile_image'] = $imagePath;
         }
-
+    
         // Actualizar el producto con los datos validados
         $product->update($validated);
-
+    
         // Devolver una respuesta JSON con el producto actualizado
         return response()->json($product, 200);
     }
+    
 
     /**
      * Elimina un producto existente según su ID.
