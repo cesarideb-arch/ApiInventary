@@ -6,18 +6,39 @@ use Illuminate\Http\Request;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Schema; // Necesario para usar Schema
 
-class SupplierController extends Controller
-{
+class SupplierController extends Controller {
     // GET all suppliers
-    public function index()
-    {
+    public function index() {
         $suppliers = Supplier::latest()->get();
         return response()->json($suppliers);
     }
 
+
+    public function SearchSupplier(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+
+        // Si el parámetro de búsqueda está presente, filtrar las categorías
+        if ($search) {
+            $suppliers = Supplier::where('article', 'like', "%{$search}%")
+                ->orWhere('company', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('address', 'like', "%{$search}%")
+                ->get();
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todos los proveedores
+            $suppliers = Supplier::all();
+        }
+
+        return response()->json($suppliers);
+    }
+
+
+
+
     // GET a single supplier by id
-    public function show($id)
-    {
+    public function show($id) {
         $supplier = Supplier::find($id);
         if (!$supplier) {
             return response()->json(['message' => 'Supplier not found'], 404);
@@ -26,8 +47,7 @@ class SupplierController extends Controller
     }
 
     // POST a new supplier
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $request->validate([
             'article' => 'required|string|max:255',
             'price' => 'required|numeric',
@@ -42,8 +62,7 @@ class SupplierController extends Controller
     }
 
     // PUT or PATCH update a supplier
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $supplier = Supplier::find($id);
         if (!$supplier) {
             return response()->json(['message' => 'Supplier not found'], 404);
@@ -63,8 +82,7 @@ class SupplierController extends Controller
     }
 
     // DELETE a supplier
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $supplier = Supplier::find($id);
         if (!$supplier) {
             return response()->json(['message' => 'Supplier not found'], 404);
@@ -73,4 +91,3 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier deleted successfully']);
     }
 }
-

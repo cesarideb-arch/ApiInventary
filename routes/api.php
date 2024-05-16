@@ -46,6 +46,7 @@ Route::post('/suppliers', [SupplierController::class, 'store']);
 Route::get('/suppliers/{id}', [SupplierController::class, 'show']);
 Route::put('/suppliers/{id}', [SupplierController::class, 'update']);
 Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy']);
+Route::get('/searchSupplier', [SupplierController::class, 'SearchSupplier']);
 
 //Rutas de projects
 Route::get('/projects', [ProjectController::class, 'index']);
@@ -53,6 +54,7 @@ Route::post('/projects', [ProjectController::class, 'store']);
 Route::get('/projects/{id}', [ProjectController::class, 'show']);
 Route::put('/projects/{id}', [ProjectController::class, 'update']);
 Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
+Route::get('/searchProject', [ProjectController::class, 'SearchProject']);
 
 
 
@@ -73,6 +75,7 @@ Route::get('/entrances', [EntranceController::class, 'index']);
 Route::get('/entrances/{id}', [EntranceController::class, 'show']);
 Route::put('/entrances/{id}', [EntranceController::class, 'update']);
 Route::delete('/entrances/{id}', [EntranceController::class, 'destroy']);
+Route::get('/searchEntrance', [EntranceController::class, 'SearchEntrance']);
 
 // Add Output
 Route::post('/outputs', [OutputController::class, 'store']);

@@ -14,6 +14,34 @@ class ProjectController extends Controller
         return response()->json($projects);
     }
 
+    public function SearchProject(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+    
+        // Si el parámetro de búsqueda está presente, filtrar los proyectos
+        if ($search) {
+            $projects = Project::where('name', 'like', "%{$search}%")
+                                ->orWhere('description', 'like', "%{$search}%")
+                                ->orWhere('company_name', 'like', "%{$search}%")
+                                ->orWhere('rfc', 'like', "%{$search}%")
+                                ->orWhere('address', 'like', "%{$search}%")
+                                ->orWhere('phone_number', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('client_name', 'like', "%{$search}%")
+                                ->get();
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todos los proyectos
+            $projects = Project::all();
+        }
+    
+        return response()->json($projects);
+    }
+
+
+
+
+
+
     // GET a single project by id
     public function show($id)
     {

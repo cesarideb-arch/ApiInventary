@@ -12,7 +12,44 @@ class EntranceController extends Controller {
         $entrances = Entrance::with(['project', 'product'])->latest()->get();
         return response()->json($entrances);
     }
+
+  
     
+    public function SearchEntrance(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+    
+        // Crear la consulta base con las relaciones
+        $query = Entrance::with(['project', 'product'])
+                        ->join('projects', 'entrances.project_id', '=', 'projects.id')
+                        ->join('products', 'entrances.product_id', '=', 'products.id')
+                        ->select('entrances.*');
+    
+        // Si el parámetro de búsqueda está presente, filtrar las entradas
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('entrances.responsible', 'like', "%{$search}%")
+                  ->orWhere('entrances.quantity', 'like', "%{$search}%")
+                  ->orWhere('entrances.description', 'like', "%{$search}%")
+                  ->orWhere('entrances.created_at', 'like', "%{$search}%")
+                  ->orWhere('projects.name', 'like', "%{$search}%")
+                  ->orWhere('products.name', 'like', "%{$search}%")
+                  ->orWhere('entrances.project_id', 'like', "%{$search}%")
+                  ->orWhere('entrances.product_id', 'like', "%{$search}%");
+            });
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todas las entradas
+            $entrances = Entrance::with(['project', 'product'])->get();
+            return response()->json($entrances);
+        }
+    
+        // Ejecutar la consulta si hay un parámetro de búsqueda
+        $entrances = $query->get();
+    
+        return response()->json($entrances);
+    }
+    
+
 
     // GET a single entrance by id
     public function show($id) {
