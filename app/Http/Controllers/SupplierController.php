@@ -87,7 +87,14 @@ class SupplierController extends Controller {
         if (!$supplier) {
             return response()->json(['message' => 'Supplier not found'], 404);
         }
+    
+        // Verificar si el proveedor está relacionado con otros registros (por ejemplo, con productos)
+        if ($supplier->products()->exists()) { // Cambia 'products' por la relación adecuada
+            return response()->json(['message' => 'La proveedor está relacionada con productos y no puede ser eliminada'], 400);
+        }
+    
         $supplier->delete();
         return response()->json(['message' => 'Supplier deleted successfully']);
     }
+    
 }

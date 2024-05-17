@@ -95,13 +95,19 @@ class ProjectController extends Controller
 
     // DELETE a project
     public function destroy($id)
-    {
-        $project = Project::find($id);
-        if (!$project) {
-            return response()->json(['message' => 'Project not found'], 404);
-        }
-        $project->delete();
-        return response()->json(['message' => 'Project deleted successfully']);
+{
+    $project = Project::find($id);
+    if (!$project) {
+        return response()->json(['message' => 'Project not found'], 404);
     }
+
+    // Verificar si el proyecto está relacionado con registros en las tablas entrances o outputs
+    if ($project->entrances()->exists() || $project->outputs()->exists()) {
+        return response()->json(['message' => 'El proyecto está relacionado con entradas o salidas y no puede ser eliminado'], 400);
+    }
+
+    $project->delete();
+    return response()->json(['message' => 'Project deleted successfully']);
+}
 }
 

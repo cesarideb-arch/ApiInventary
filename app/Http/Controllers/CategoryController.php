@@ -84,6 +84,12 @@ class CategoryController extends Controller {
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
+
+        // Verificar si la categoría está relacionada con otros registros
+        if ($category->products()->exists()) { // Cambia 'products' por la relación adecuada
+            return response()->json(['message' => 'La categoría está relacionada con productos y no puede ser eliminada'], 400);
+        }
+
         $category->delete();
         return response()->json(['message' => 'Category deleted successfully']);
     }
