@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 
-class CategoryController extends Controller
-{
+class CategoryController extends Controller {
     // GET all categories
-    public function index()
-    {
+    public function index() {
         $categories = Category::latest()->get();
         return response()->json($categories);
     }
@@ -19,17 +17,17 @@ class CategoryController extends Controller
     public function SearchCategory(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
-    
+
         // Si el parámetro de búsqueda está presente, filtrar las categorías
         if ($search) {
             $categories = Category::where('name', 'like', '%' . $search . '%')
-                                  ->orWhere('description', 'like', '%' . $search . '%')
-                                  ->get();
+                ->orWhere('description', 'like', '%' . $search . '%')
+                ->get();
         } else {
             // Si no hay parámetro de búsqueda, obtener todas las categorías
             $categories = Category::all();
         }
-    
+
         return response()->json($categories);
     }
 
@@ -45,8 +43,7 @@ class CategoryController extends Controller
 
 
     // GET a single category by id
-    public function show($id)
-    {
+    public function show($id) {
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -55,8 +52,7 @@ class CategoryController extends Controller
     }
 
     // POST a new category
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $request->validate([
             'name' => 'required|string|max:100',
             'description' => 'nullable|string|max:100'
@@ -67,8 +63,7 @@ class CategoryController extends Controller
     }
 
     // PUT or PATCH update a category
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -84,8 +79,7 @@ class CategoryController extends Controller
     }
 
     // DELETE a category
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);

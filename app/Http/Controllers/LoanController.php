@@ -57,7 +57,6 @@ class LoanController extends Controller {
             'product_id' => 'required|exists:products,id',
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer',
-            'date' => 'required|date'
         ]);
 
         // Buscar el producto

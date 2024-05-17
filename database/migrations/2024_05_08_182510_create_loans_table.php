@@ -19,7 +19,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('product_id');
                 $table->string('responsible', 100);
                 $table->integer('quantity');
-                $table->string('date', 100);
+                // $table->string('date', 100);
                 $table->integer('status');
                 $table->foreign('product_id')->references('id')->on('products');
                 $table->timestamps();
