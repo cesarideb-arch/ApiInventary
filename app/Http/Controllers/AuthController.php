@@ -49,6 +49,11 @@ class AuthController extends Controller {
     }
 
 
+    public function index () {
+        $users = User::latest()->get();
+        return response()->json($users);
+    }
+
     public function login(Request $request) {
         $validateData = Validator::make($request->all(), [
             'email' => 'required|email',
