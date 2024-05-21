@@ -31,6 +31,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de usuarios
     Route::get('/users', [AuthController::class, 'index']);
+    Route::get('/searchUsers', [AuthController::class, 'searchUsers']);
+    Route::get('/users/{id}', [AuthController::class, 'show']);
+    Route::put('/users/{id}', [AuthController::class, 'update']);
+    Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+
 
     // Rutas de productos
     Route::get('/products', [ProductController::class, 'index']);

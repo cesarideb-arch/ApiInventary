@@ -49,10 +49,31 @@ class AuthController extends Controller {
     }
 
 
-    public function index () {
+    public function index() {
         $users = User::latest()->get();
         return response()->json($users);
     }
+
+
+    public function searchUsers(Request $request) {
+        // Obtener el parámetro de búsqueda desde la solicitud
+        $search = $request->input('search');
+
+        // Si el parámetro de búsqueda está presente, filtrar los usuarios
+        if ($search) {
+            $users = User::where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%')
+                ->get();
+        } else {
+            // Si no hay parámetro de búsqueda, obtener todos los usuarios
+            $users = User::latest()->get();
+        }
+
+        return response()->json($users);
+    }
+
+
+
 
     public function login(Request $request) {
         $validateData = Validator::make($request->all(), [
@@ -81,7 +102,7 @@ class AuthController extends Controller {
                 'email' => $user->email,
                 'role' => $user->role
 
-                
+
             ]
         ]);
     }
@@ -89,5 +110,79 @@ class AuthController extends Controller {
     public function logout(Request $request) {
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Sesión terminada']);
+    }
+
+    public function show($id) {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+        return response()->json($user);
+    }
+
+
+    public function update(Request $request, $id) {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        // Validación de los datos de la solicitud
+        $validator = Validator::make($request->all(), [
+            'name' => 'string|max:255',
+            'email' => 'email|max:255|unique:users,email,' . $id,
+            'password' => 'string|min:8|nullable', // 'nullable' permite que el campo sea opcional
+            'role' => 'string',
+            'admin_password' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        // Verificación de la contraseña del administrador
+        $fixedAdminPassword = '2340';
+        if ($request->admin_password !== $fixedAdminPassword) {
+            return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
+        }
+
+        // Si se proporciona una nueva contraseña, encriptarla antes de actualizar
+        if ($request->filled('password')) {
+            $request->merge(['password' => Hash::make($request->password)]);
+        } else {
+            // Si no se proporciona una nueva contraseña, eliminar el campo para no actualizarlo
+            $request->request->remove('password');
+        }
+
+        // Actualizar el usuario con los datos validados
+        $user->update($request->except(['admin_password']));
+
+        return response()->json(['message' => 'Usuario actualizado exitosamente', 'user' => $user]);
+    }
+
+
+
+
+    public function destroy(Request $request, $id) {
+        // Validar que se proporcione la contraseña del administrador
+        $request->validate([
+            'admin_password' => 'required|string',
+        ]);
+
+        // Verificación de la contraseña del administrador
+        $fixedAdminPassword = '2340';
+        if ($request->admin_password !== $fixedAdminPassword) {
+            return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
+        }
+
+        // Buscar el usuario por ID
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        // Eliminar el usuario
+        $user->delete();
+        return response()->json(['message' => 'Usuario eliminado con éxito']);
     }
 }
