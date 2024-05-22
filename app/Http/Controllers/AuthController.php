@@ -25,8 +25,8 @@ class AuthController extends Controller {
         }
 
         // Verificación de la contraseña del administrador
-        $fixedAdminPassword = '2340';
-        if ($request->admin_password !== $fixedAdminPassword) {
+        $adminPassword = env('ADMIN_PASSWORD', 'default_password');
+        if ($request->admin_password !== $adminPassword) {
             return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
 
@@ -120,7 +120,6 @@ class AuthController extends Controller {
         return response()->json($user);
     }
 
-
     public function update(Request $request, $id) {
         $user = User::find($id);
         if (!$user) {
@@ -141,8 +140,8 @@ class AuthController extends Controller {
         }
 
         // Verificación de la contraseña del administrador
-        $fixedAdminPassword = '2340';
-        if ($request->admin_password !== $fixedAdminPassword) {
+        $adminPassword = env('ADMIN_PASSWORD', 'default_password');
+        if ($request->admin_password !== $adminPassword) {
             return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
 
@@ -162,27 +161,27 @@ class AuthController extends Controller {
 
 
 
-
     public function destroy(Request $request, $id) {
         // Validar que se proporcione la contraseña del administrador
         $request->validate([
             'admin_password' => 'required|string',
         ]);
-
+    
         // Verificación de la contraseña del administrador
-        $fixedAdminPassword = '2340';
-        if ($request->admin_password !== $fixedAdminPassword) {
+        $adminPassword = env('ADMIN_PASSWORD', 'default_password');
+        if ($request->admin_password !== $adminPassword) {
             return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
-
+    
         // Buscar el usuario por ID
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
-
+    
         // Eliminar el usuario
         $user->delete();
         return response()->json(['message' => 'Usuario eliminado con éxito']);
     }
+    
 }
