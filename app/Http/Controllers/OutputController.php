@@ -49,11 +49,6 @@ class OutputController extends Controller {
     
 
 
-
-
-
-
-
     // GET a single output by id
     public function show($id) {
         $output = Output::with(['project', 'product'])->find($id);
