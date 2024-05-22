@@ -22,7 +22,7 @@ class UserSeed extends Seeder {
                 'email' => 'Admin@gmail.com',
                 'email_verified_at' => null,
                 'password' => Hash::make($adminPassword), // Usar la contraseña del archivo .env
-                'role' => 1,
+                'role' => 0,
                 'remember_token' => null,
                 'created_at' => now(),
                 'updated_at' => now(),

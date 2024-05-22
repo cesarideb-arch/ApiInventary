@@ -50,7 +50,7 @@ class AuthController extends Controller {
 
 
     public function index() {
-        $users = User::latest()->get();
+        $users = User::where('role', '!=', 0)->latest()->get();
         return response()->json($users);
     }
 
