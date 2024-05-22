@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,13 +14,13 @@ return new class extends Migration
     {
         Schema::create('outputs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('project_id')->nullable();
             $table->unsignedBigInteger('product_id');
             $table->string('responsible', 100);
             $table->integer('quantity');
             $table->string('description', 100)->nullable();
             // $table->dateTime('date');
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
             $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });
@@ -37,3 +36,4 @@ return new class extends Migration
         Schema::dropIfExists('outputs');
     }
 };
+

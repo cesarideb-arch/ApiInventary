@@ -63,7 +63,7 @@ class EntranceController extends Controller {
     // POST a new entrance
     public function store(Request $request) {
         $request->validate([
-            'project_id' => 'required|exists:projects,id',
+            'project_id' => 'nullable|exists:projects,id',
             'product_id' => 'required|exists:products,id',
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer',

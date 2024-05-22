@@ -61,7 +61,7 @@ class OutputController extends Controller {
     // POST a new output
     public function store(Request $request) {
         $request->validate([
-            'project_id' => 'required|exists:projects,id',
+            'project_id' => 'nullable|exists:projects,id',
             'product_id' => 'required|exists:products,id',
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer|min:1',
@@ -81,8 +81,17 @@ class OutputController extends Controller {
         $product->save();
     
         // Crear la salida en la tabla de salidas
-        $output = Output::create($request->all());
+        $outputData = $request->only(['project_id', 'product_id', 'responsible', 'quantity', 'description']);
+        
+        // Eliminar el campo 'project_id' si está vacío o nulo
+        if (empty($outputData['project_id'])) {
+            $outputData['project_id'] = null;
+        }
+    
+        $output = Output::create($outputData);
     
         return response()->json($output, 201);
     }
+
 }
+
