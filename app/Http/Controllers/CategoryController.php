@@ -31,17 +31,6 @@ class CategoryController extends Controller {
         return response()->json($categories);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     // GET a single category by id
     public function show($id) {
         $category = Category::find($id);
