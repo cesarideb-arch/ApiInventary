@@ -53,27 +53,27 @@ class ProductController extends Controller {
         $categories = Category::orderBy('id')->get();
         $suppliers = Supplier::orderBy('id')->get();
 
+        // Crear la consulta base con las relaciones
+        $query = Product::with(['category', 'supplier'])
+            ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+            ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
+            ->select('products.*');
+
         // Si el parámetro de búsqueda está presente, filtrar los productos
         if ($search) {
-            $products = Product::with(['category', 'supplier']) // Cargar las relaciones category y supplier
-                ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
-                ->where('products.name', 'LIKE', "%$search%")
-                ->orWhere('products.category_id', 'LIKE', "%$search%")
-                ->orWhere('products.price', 'LIKE', "%$search%")
-                ->orWhere('products.location', 'LIKE', "%$search%")
-                ->orWhere('products.description', 'LIKE', "%$search%")
-                ->orWhere('categories.name', 'LIKE', "%$search%")
-                ->orWhere('suppliers.company', 'LIKE', "%$search%")
-                ->select('products.*') // Seleccionar solo las columnas de la tabla products
-                ->latest('products.created_at') // Ordenar por la columna de fecha de creación de la tabla products
-                ->get();
-        } else {
-            $products = Product::with(['category', 'supplier']) // Cargar las relaciones category y supplier
-                ->latest('products.created_at') // Ordenar por la columna de fecha de creación de la tabla products
-                ->get();
+            $query->where(function ($q) use ($search) {
+                $q->where('products.name', 'LIKE', "%$search%")
+                    ->orWhere('products.category_id', 'LIKE', "%$search%")
+                    ->orWhere('products.price', 'LIKE', "%$search%")
+                    ->orWhere('products.location', 'LIKE', "%$search%")
+                    ->orWhere('products.description', 'LIKE', "%$search%")
+                    ->orWhere('categories.name', 'LIKE', "%$search%")
+                    ->orWhere('suppliers.company', 'LIKE', "%$search%");
+            });
         }
 
+        // Ejecutar la consulta y ordenar por la fecha de creación
+        $products = $query->latest('products.created_at')->get();
 
         return response()->json($products, 200);
     }
