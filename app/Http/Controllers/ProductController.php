@@ -100,7 +100,7 @@ class ProductController extends Controller {
                 'observations' => 'nullable|string|max:50',
                 'location' => 'nullable|string|max:20',
                 'category_id' => 'required|exists:categories,id',
-                'supplier_id' => 'required|exists:suppliers,id',
+                'supplier_id' => 'nullable|exists:suppliers,id',
             ]);
 
             // Comprobar si la solicitud contiene una imagen
@@ -171,7 +171,7 @@ class ProductController extends Controller {
             'observations' => 'nullable|string|max:50',
             'location' => 'nullable|string|max:20',
             'category_id' => 'required|exists:categories,id',
-            'supplier_id' => 'required|exists:suppliers,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
         ]);
 
         // Comprobar si la solicitud contiene una imagen
