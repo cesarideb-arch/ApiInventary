@@ -80,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/entrances/{id}', [EntranceController::class, 'update']);
     Route::delete('/entrances/{id}', [EntranceController::class, 'destroy']);
     Route::get('/searchEntrance', [EntranceController::class, 'SearchEntrance']);
+    Route::get('/GetProductEntrance', [EntranceController::class, 'GetProductEntrance']);
 
     // Rutas de salidas
     Route::post('/outputs', [OutputController::class, 'store']);
@@ -88,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/outputs/{id}', [OutputController::class, 'update']);
     Route::delete('/outputs/{id}', [OutputController::class, 'destroy']);
     Route::get('/searchOutput', [OutputController::class, 'SearchOutput']);
+    Route::get('/GetProductOutput', [OutputController::class, 'GetProductOutput']);
 
     // Rutas de préstamos
     Route::post('/loans', [LoanController::class, 'store']);
@@ -98,4 +100,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/comeBackLoan/{id}', [LoanController::class, 'comeBackLoan']);
     Route::get('/getCount', [LoanController::class, 'getCount']);
     Route::get('/searchLoan', [LoanController::class, 'SearchLoan']);
+    Route::get('/GetProductLoan', [LoanController::class, 'GetProductLoan']);
 });

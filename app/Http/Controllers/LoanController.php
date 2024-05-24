@@ -15,6 +15,20 @@ class LoanController extends Controller {
         return response()->json($loans);
     }
 
+    public function GetProductLoan() {
+        // Obtener el producto con más préstamos
+        $productWithMostLoans = Product::withCount('loans')
+            ->orderBy('loans_count', 'desc')
+            ->first();
+
+        // Verificar si se encontró algún producto
+        if ($productWithMostLoans) {
+            return response()->json($productWithMostLoans, 200);
+        } else {
+            return response()->json(['message' => 'No products found'], 404);
+        }
+    }
+
     public function SearchLoan(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');

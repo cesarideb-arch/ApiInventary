@@ -13,6 +13,21 @@ class OutputController extends Controller {
         return response()->json($outputs);
     }
 
+    // GET the product with the most outputs
+    public function GetProductOutput() {
+        // Obtener el producto con más salidas
+        $productWithMostOutputs = Product::withCount('outputs')
+            ->orderBy('outputs_count', 'desc')
+            ->first();
+
+        // Verificar si se encontró algún producto
+        if ($productWithMostOutputs) {
+            return response()->json($productWithMostOutputs, 200);
+        } else {
+            return response()->json(['message' => 'No products found'], 404);
+        }
+    }
+
     public function SearchOutput(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');

@@ -24,6 +24,18 @@ class Product extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function entrances() {
+        return $this->hasMany(Entrance::class);
+    }
+
+    public function outputs() {
+        return $this->hasMany(Output::class);
+    }
+
+    public function loans() {
+        return $this->hasMany(Loan::class);
+    }
 }
 
 
