@@ -27,8 +27,6 @@ class EntranceController extends Controller {
         }
     }
 
-
-
     public function SearchEntrance(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
