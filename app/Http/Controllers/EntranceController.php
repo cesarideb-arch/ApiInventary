@@ -14,14 +14,14 @@ class EntranceController extends Controller {
     }
 
     public function GetProductEntrance() {
-        // Obtener el producto con más entradas
-        $productWithMostEntrances = Product::withCount('entrances')
-            ->orderBy('entrances_count', 'desc')
+        // Obtener el producto con la mayor cantidad de entradas
+        $productWithMostQuantity = Product::with('entrances')
+            ->orderBy('quantity', 'desc')
             ->first();
 
         // Verificar si se encontró algún producto
-        if ($productWithMostEntrances) {
-            return response()->json($productWithMostEntrances, 200);
+        if ($productWithMostQuantity) {
+            return response()->json($productWithMostQuantity, 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);
         }

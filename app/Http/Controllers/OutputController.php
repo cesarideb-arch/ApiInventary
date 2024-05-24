@@ -15,9 +15,9 @@ class OutputController extends Controller {
 
     // GET the product with the most outputs
     public function GetProductOutput() {
-        // Obtener el producto con más salidas
+        // Obtener el producto con la mayor cantidad de salidas
         $productWithMostOutputs = Product::withCount('outputs')
-            ->orderBy('outputs_count', 'desc')
+            ->orderBy('quantity', 'desc')
             ->first();
 
         // Verificar si se encontró algún producto

@@ -16,9 +16,9 @@ class LoanController extends Controller {
     }
 
     public function GetProductLoan() {
-        // Obtener el producto con más préstamos
+        // Obtener el producto con la mayor cantidad de préstamos
         $productWithMostLoans = Product::withCount('loans')
-            ->orderBy('loans_count', 'desc')
+            ->orderBy('quantity', 'desc')
             ->first();
 
         // Verificar si se encontró algún producto
