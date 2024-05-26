@@ -81,6 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/entrances/{id}', [EntranceController::class, 'destroy']);
     Route::get('/searchEntrance', [EntranceController::class, 'SearchEntrance']);
     Route::get('/GetProductEntrance', [EntranceController::class, 'GetProductEntrance']);
+    Route::get('/GetEntrancesCount', [EntranceController::class, 'GetEntrancesCount']);
 
     // Rutas de salidas
     Route::post('/outputs', [OutputController::class, 'store']);
@@ -90,6 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/outputs/{id}', [OutputController::class, 'destroy']);
     Route::get('/searchOutput', [OutputController::class, 'SearchOutput']);
     Route::get('/GetProductOutput', [OutputController::class, 'GetProductOutput']);
+    Route::get('/GetOutputsCount', [OutputController::class, 'GetOutputsCount']);
 
     // Rutas de préstamos
     Route::post('/loans', [LoanController::class, 'store']);

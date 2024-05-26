@@ -28,6 +28,15 @@ class OutputController extends Controller {
         }
     }
 
+    // GET the total number of outputs
+    public function GetOutputsCount() {
+        // Obtener la cantidad total de salidas
+        $outputsCount = Output::count();
+
+        return response()->json(['count' => $outputsCount], 200);
+    }
+    
+
     public function SearchOutput(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
