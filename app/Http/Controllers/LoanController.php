@@ -30,6 +30,7 @@ class LoanController extends Controller {
             $product = Product::find($productWithMostLoan->product_id);
             return response()->json([
                 'product' => $product,
+                'name' => $product->name,
                 'total_quantity' => $productWithMostLoan->total_quantity
             ], 200);
         } else {

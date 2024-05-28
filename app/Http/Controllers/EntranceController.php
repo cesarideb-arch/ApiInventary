@@ -14,6 +14,7 @@ class EntranceController extends Controller {
         return response()->json($entrances);
     }
 
+   
     public function GetProductEntrance() {
         // Obtener el producto con la mayor cantidad de entradas (sumando las cantidades)
         $productWithMostQuantity = DB::table('entrances')
@@ -26,13 +27,15 @@ class EntranceController extends Controller {
         if ($productWithMostQuantity) {
             $product = Product::find($productWithMostQuantity->product_id);
             return response()->json([
-                'product' => $product,
+                'product_id' => $product->id,
+                'name' => $product->name,
                 'total_quantity' => $productWithMostQuantity->total_quantity
             ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);
         }
     }
+    
 
     public function GetEntrancesCount() {
         // Obtener la cantidad total de entradas

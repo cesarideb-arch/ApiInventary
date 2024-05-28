@@ -27,6 +27,7 @@ class OutputController extends Controller {
             $product = Product::find($productWithMostOutput->product_id);
             return response()->json([
                 'product' => $product,
+                'name' => $product->name,
                 'total_quantity' => $productWithMostOutput->total_quantity
             ], 200);
         } else {
