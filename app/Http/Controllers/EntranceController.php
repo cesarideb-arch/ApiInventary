@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Entrance;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class EntranceController extends Controller {
     // GET all entrances
@@ -14,26 +15,30 @@ class EntranceController extends Controller {
     }
 
     public function GetProductEntrance() {
-        // Obtener el producto con la mayor cantidad de entradas
-        $productWithMostQuantity = Product::with('entrances')
-            ->orderBy('quantity', 'desc')
+        // Obtener el producto con la mayor cantidad de entradas (sumando las cantidades)
+        $productWithMostQuantity = DB::table('entrances')
+            ->select('product_id', DB::raw('SUM(quantity) as total_quantity'))
+            ->groupBy('product_id')
+            ->orderBy('total_quantity', 'desc')
             ->first();
-
+    
         // Verificar si se encontró algún producto
         if ($productWithMostQuantity) {
-            return response()->json($productWithMostQuantity, 200);
+            $product = Product::find($productWithMostQuantity->product_id);
+            return response()->json([
+                'product' => $product,
+                'total_quantity' => $productWithMostQuantity->total_quantity
+            ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);
         }
     }
-
 
     public function GetEntrancesCount() {
         // Obtener la cantidad total de entradas
         $entrancesCount = Entrance::count();
 
         return response()->json(['count' => $entrancesCount], 200);
-    
     }
 
     public function SearchEntrance(Request $request) {

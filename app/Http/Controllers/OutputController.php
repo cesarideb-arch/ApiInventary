@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Output;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class OutputController extends Controller {
     // GET all outputs
@@ -13,16 +14,21 @@ class OutputController extends Controller {
         return response()->json($outputs);
     }
 
-    // GET the product with the most outputs
     public function GetProductOutput() {
-        // Obtener el producto con la mayor cantidad de salidas
-        $productWithMostOutputs = Product::withCount('outputs')
-            ->orderBy('quantity', 'desc')
+        // Obtener el producto con la mayor cantidad de salidas (sumando las cantidades)
+        $productWithMostOutput = DB::table('outputs')
+            ->select('product_id', DB::raw('SUM(quantity) as total_quantity'))
+            ->groupBy('product_id')
+            ->orderBy('total_quantity', 'desc')
             ->first();
-
+    
         // Verificar si se encontró algún producto
-        if ($productWithMostOutputs) {
-            return response()->json($productWithMostOutputs, 200);
+        if ($productWithMostOutput) {
+            $product = Product::find($productWithMostOutput->product_id);
+            return response()->json([
+                'product' => $product,
+                'total_quantity' => $productWithMostOutput->total_quantity
+            ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);
         }

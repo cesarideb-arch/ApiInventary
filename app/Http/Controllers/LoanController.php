@@ -6,6 +6,7 @@ use App\Models\Loan; // Import the Loan model class
 
 use Illuminate\Http\Request;
 use App\Models\Product; // Import the Product model class
+use Illuminate\Support\Facades\DB; // Import the DB class
 
 class LoanController extends Controller {
 
@@ -15,19 +16,27 @@ class LoanController extends Controller {
         return response()->json($loans);
     }
 
+   
     public function GetProductLoan() {
-        // Obtener el producto con la mayor cantidad de préstamos
-        $productWithMostLoans = Product::withCount('loans')
-            ->orderBy('quantity', 'desc')
+        // Obtener el producto con la mayor cantidad de préstamos (sumando las cantidades)
+        $productWithMostLoan = DB::table('loans')
+            ->select('product_id', DB::raw('SUM(quantity) as total_quantity'))
+            ->groupBy('product_id')
+            ->orderBy('total_quantity', 'desc')
             ->first();
-
+    
         // Verificar si se encontró algún producto
-        if ($productWithMostLoans) {
-            return response()->json($productWithMostLoans, 200);
+        if ($productWithMostLoan) {
+            $product = Product::find($productWithMostLoan->product_id);
+            return response()->json([
+                'product' => $product,
+                'total_quantity' => $productWithMostLoan->total_quantity
+            ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);
         }
     }
+    
 
     public function SearchLoan(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
