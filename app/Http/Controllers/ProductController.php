@@ -202,18 +202,23 @@ class ProductController extends Controller {
         // Devolver una respuesta JSON con el producto actualizado
         return response()->json($product, 200);
     }
-
-
     /**
      * Elimina un producto existente según su ID.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function destroy($id) {
         $product = Product::find($id);
         if (!$product) {
             return response()->json(['error' => 'Producto no encontrado'], 404);
+        }
+
+        if ($product->profile_image) {
+            if (File::exists(public_path($product->profile_image))) {
+                File::delete(public_path($product->profile_image));
+            }
         }
         $product->delete();
         return response()->json(['message' => 'Producto eliminado exitosamente'], 200);
