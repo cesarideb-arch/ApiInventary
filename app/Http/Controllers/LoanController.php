@@ -16,7 +16,7 @@ class LoanController extends Controller {
         return response()->json($loans);
     }
 
-   
+
     public function GetProductLoan() {
         // Obtener el producto con la mayor cantidad de préstamos (sumando las cantidades)
         $productWithMostLoan = DB::table('loans')
@@ -24,7 +24,7 @@ class LoanController extends Controller {
             ->groupBy('product_id')
             ->orderBy('total_quantity', 'desc')
             ->first();
-    
+
         // Verificar si se encontró algún producto
         if ($productWithMostLoan) {
             $product = Product::find($productWithMostLoan->product_id);
@@ -37,7 +37,7 @@ class LoanController extends Controller {
             return response()->json(['message' => 'No products found'], 404);
         }
     }
-    
+
 
     public function SearchLoan(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
@@ -51,12 +51,30 @@ class LoanController extends Controller {
         // Si el parámetro de búsqueda está presente, filtrar las entradas
         if ($search) {
             $query->where(function ($q) use ($search) {
+                // Convertir el texto de búsqueda a minúsculas para comparación
+                $searchLower = strtolower($search);
+
+                // Determinar el valor del status basado en el texto de búsqueda
+                $statusValue = null;
+                if ($searchLower === 'producto prestado') {
+                    $statusValue = 1;
+                } else if ($searchLower === 'producto regresado') {
+                    $statusValue = 0;
+                }
+
+                // Aplicar filtros a la consulta
                 $q->where('loans.responsible', 'like', "%{$search}%")
                     ->orWhere('loans.quantity', 'like', "%{$search}%")
                     ->orWhere('loans.created_at', 'like', "%{$search}%")
-                    ->orWhere('loans.status', 'like', "%{$search}%")
+                    ->orWhere('loans.updated_at', 'like', "%{$search}%")
+                    ->orWhere('loans.observations', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
                     ->orWhere('loans.product_id', 'like', "%{$search}%");
+
+                // Si se ha determinado un valor de status, agregarlo a la consulta
+                if ($statusValue !== null) {
+                    $q->orWhere('loans.status', $statusValue);
+                }
             });
         } else {
             // Si no hay parámetro de búsqueda, obtener todos los préstamos
@@ -145,23 +163,22 @@ class LoanController extends Controller {
     public function comeBackLoan(Request $request, $id) {
         try {
             $loan = Loan::findOrFail($id);
-    
+
             if ($loan->status !== 1) {
                 return response()->json(['error' => 'Este préstamo ya ha sido devuelto.'], 400);
             }
-    
+
             $product = Product::findOrFail($loan->product_id);
             $product->quantity += $loan->quantity;
             $product->save();
-    
+
             $loan->status = 0;
             $loan->observations = $request->input('observations'); // Asegúrate de que las observaciones se guardan
             $loan->save();
-    
+
             return response()->json(['message' => 'El préstamo ha sido devuelto correctamente.'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al procesar la devolución del préstamo.', 'details' => $e->getMessage()], 500);
         }
     }
-    
 }
