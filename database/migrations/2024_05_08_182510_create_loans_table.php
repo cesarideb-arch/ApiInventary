@@ -21,6 +21,7 @@ return new class extends Migration
                 $table->integer('quantity');
                 // $table->string('date', 100);
                 $table->integer('status');
+                $table->string('observations', 50)->nullable();
                 $table->foreign('product_id')->references('id')->on('products');
                 $table->timestamps();
             });

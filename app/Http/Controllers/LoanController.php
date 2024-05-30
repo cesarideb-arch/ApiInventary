@@ -142,24 +142,30 @@ class LoanController extends Controller {
 
 
 
-    public function comeBackLoan($id) {
-        // Buscar el préstamo por su ID
-        $loan = Loan::findOrFail($id);
-
-        // Verificar si el préstamo está en estado activo (status = 1)
-        if ($loan->status !== 1) {
-            return response()->json(['error' => 'Este préstamo ya ha sido devuelto.'], 400);
-        }
-
-        // Aumentar la cantidad del producto devuelto en el inventario
-        $product = Product::findOrFail($loan->product_id);
-        $product->quantity += $loan->quantity;
-        $product->save();
-
-        // Actualizar el estado del préstamo a devuelto (status = 0)
-        $loan->status = 0;
-        $loan->save();
-
-        return response()->json(['message' => 'El préstamo ha sido devuelto correctamente.'], 200);
+    public function comeBackLoan(Request $request, $id) {
+        try {
+            // Buscar el préstamo por su ID
+            $loan = Loan::findOrFail($id);
+    
+            // Verificar si el préstamo está en estado activo (status = 1)
+            if ($loan->status !== 1) {
+                return response()->json(['error' => 'Este préstamo ya ha sido devuelto.'], 400);
+            }
+    
+            // Aumentar la cantidad del producto devuelto en el inventario
+            $product = Product::findOrFail($loan->product_id);
+            $product->quantity += $loan->quantity;
+            $product->save();
+    
+            // Actualizar el estado del préstamo a devuelto (status = 0)
+            $loan->status = 0;
+            $loan->observations = $request->input('observations');
+            $loan->save();
+    
+            return response()->json(['message' => 'El préstamo ha sido devuelto correctamente.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al procesar la devolución del préstamo.', 'details' => $e->getMessage()], 500);
+  
+          }
     }
 }
