@@ -29,7 +29,8 @@ class EntranceController extends Controller {
             return response()->json([
                 'product_id' => $product->id,
                 'name' => $product->name,
-                'total_quantity' => $productWithMostQuantity->total_quantity
+                'total_quantity' => number_format($productWithMostQuantity->total_quantity, 0, ',', '.')
+
             ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);

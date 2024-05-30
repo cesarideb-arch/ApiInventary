@@ -31,7 +31,7 @@ class LoanController extends Controller {
             return response()->json([
                 'product' => $product,
                 'name' => $product->name,
-                'total_quantity' => $productWithMostLoan->total_quantity
+                'total_quantity' => number_format($productWithMostLoan->total_quantity, 0, ',', '.')
             ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);

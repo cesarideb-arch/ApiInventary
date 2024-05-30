@@ -28,7 +28,7 @@ class OutputController extends Controller {
             return response()->json([
                 'product' => $product,
                 'name' => $product->name,
-                'total_quantity' => $productWithMostOutput->total_quantity
+                'total_quantity' => number_format($productWithMostOutput->total_quantity, 0, ',', '.')
             ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);
