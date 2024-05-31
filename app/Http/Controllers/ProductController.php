@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Models\Supplier; // Import the Supplier model
 use App\Models\Project; // Import the Project model
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller {
     /**
@@ -209,18 +211,35 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
 
-    public function destroy($id) {
+     public function destroy($id) {
         $product = Product::find($id);
         if (!$product) {
             return response()->json(['error' => 'Producto no encontrado'], 404);
         }
-
-        if ($product->profile_image) {
-            if (File::exists(public_path($product->profile_image))) {
-                File::delete(public_path($product->profile_image));
+    
+        DB::beginTransaction();
+    
+        try {
+            // Elimina el producto primero
+            $product->delete();
+    
+            // Intenta eliminar la imagen si existe
+            if ($product->profile_image) {
+                $imagePath = public_path($product->profile_image);
+                if (File::exists($imagePath)) {
+                    if (!File::delete($imagePath)) {
+                        // Si la imagen no se puede eliminar, lanza una excepción
+                        throw new Exception('No se pudo eliminar la imagen');
+                    }
+                }
             }
+    
+            DB::commit();
+            return response()->json(['message' => 'Producto eliminado exitosamente'], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        $product->delete();
-        return response()->json(['message' => 'Producto eliminado exitosamente'], 200);
     }
+    
 }
