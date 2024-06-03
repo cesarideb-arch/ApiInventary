@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->text('description')->nullable();
             $table->string('company_name', 50);
-            $table->string('rfc', 50);
+            $table->string('rfc', 50)->nullable();
             $table->string('address', 100);
             $table->string('phone_number', 50);
             $table->string('email', 50);
