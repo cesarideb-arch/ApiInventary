@@ -61,9 +61,18 @@ class AuthController extends Controller {
 
         // Si el parámetro de búsqueda está presente, filtrar los usuarios
         if ($search) {
-            $users = User::where('name', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%')
-                ->get();
+            $users = User::where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
+
+            if ($search === 'Admin Trabajador') {
+                $users->orWhere('role', 1);
+            } elseif ($search === 'Trabajador') {
+                $users->orWhere('role', 2);
+            }
+
+            $users = $users->get();
         } else {
             // Si no hay parámetro de búsqueda, obtener todos los usuarios
             $users = User::latest()->get();
