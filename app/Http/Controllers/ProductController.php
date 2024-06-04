@@ -27,7 +27,8 @@ class ProductController extends Controller {
     // conteo de productos
     public function getCountProducts() {
         $count = Product::count();
-        return response()->json(['count' => $count], 200);
+        $formattedCount = number_format($count, 0, '.', ',');
+        return response()->json(['count' => $formattedCount], 200);
     }
 
     // GET de categorias y proveedores

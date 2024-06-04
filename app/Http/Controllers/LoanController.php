@@ -31,7 +31,7 @@ class LoanController extends Controller {
             return response()->json([
                 'product' => $product,
                 'name' => $product->name,
-                'total_quantity' => number_format($productWithMostLoan->total_quantity, 0, ',', '.')
+                'total_quantity' => number_format($productWithMostLoan->total_quantity, 0, '.', ',')
             ], 200);
         } else {
             return response()->json(['message' => 'No products found'], 404);
@@ -91,7 +91,7 @@ class LoanController extends Controller {
 
     public function getCount() {
         $count = Loan::where('status', 1)->count();
-        return response()->json(['count' => $count]);
+        return response()->json(['count' => number_format($count, 0, '.', ',')]);
     }
 
     public function store(Request $request) {

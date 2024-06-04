@@ -29,7 +29,7 @@ class EntranceController extends Controller {
             return response()->json([
                 'product_id' => $product->id,
                 'name' => $product->name,
-                'total_quantity' => number_format($productWithMostQuantity->total_quantity, 0, ',', '.')
+                'total_quantity' => number_format($productWithMostQuantity->total_quantity, 0, '.', ',')
 
             ], 200);
         } else {
