@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
+use App\Exceptions\CustomMethodNotAllowedHttpException;
 
 class AuthController extends Controller {
     public function register(Request $request) {
@@ -85,6 +86,11 @@ class AuthController extends Controller {
 
 
     public function login(Request $request) {
+
+        if (!$request->isMethod('post')) {
+            throw new CustomMethodNotAllowedHttpException();
+        }
+
         $validateData = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required'
