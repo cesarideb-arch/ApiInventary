@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::fallback(function () {
+    return view('welcome');
+});
+
+Route::get('/login', function () {
+    // Aquí puedes devolver una vista o redirigir a un controlador
+    return view('welcome');
+})->name('login');
