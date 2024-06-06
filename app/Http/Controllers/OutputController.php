@@ -101,7 +101,7 @@ class OutputController extends Controller {
 
         // Verificar si hay suficiente cantidad disponible
         if ($product->quantity < $request->quantity) {
-            return response()->json(['error' => 'No hay suficiente cantidad disponible. Cantidad disponible: ' . $product->quantity], 400);
+            return response()->json(['error' => 'No hay suficiente cantidad disponible. Cantidad disponible: ' . number_format($product->quantity, 0, '.', ',')], 400);
         }
 
         // Deducción de la cantidad en la tabla de productos
