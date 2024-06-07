@@ -53,8 +53,9 @@ class SupplierController extends Controller {
             'price' => 'required|numeric',
             'company' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'address' => 'required|string|max:100' // Nueva validación para el campo address
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:100' // Nueva validación para el campo address
+
         ]);
 
         $supplier = Supplier::create($request->all());
@@ -73,8 +74,8 @@ class SupplierController extends Controller {
             'price' => 'numeric',
             'company' => 'string|max:255',
             'phone' => 'string|max:255',
-            'email' => 'email|max:255',
-            'address' => 'string|max:100' // Nueva validación para el campo address
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:100' // Nueva validación para el campo address
         ]);
 
         $supplier->update($request->all());

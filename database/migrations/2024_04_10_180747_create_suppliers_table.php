@@ -19,8 +19,8 @@ return new class extends Migration
             $table->decimal('price');
             $table->string('company', 100);
             $table->string('phone', 100);
-            $table->string('email', 100);
-            $table->string('address', 100);
+            $table->string('email', 100)->nullable();
+            $table->string('address', 100)->nullable();
             $table->timestamps();
         });
     }
