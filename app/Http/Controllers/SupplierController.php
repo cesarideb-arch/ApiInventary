@@ -74,8 +74,8 @@ class SupplierController extends Controller {
             'price' => 'numeric',
             'company' => 'string|max:255',
             'phone' => 'string|max:255',
-            'email' => 'nullable|email|max:255',
-            'address' => 'nullable|string|max:100' // Nueva validación para el campo address
+            'email' => 'nullable|email',
+            'address' => 'nullable|string|max:255',
         ]);
 
         $supplier->update($request->all());
