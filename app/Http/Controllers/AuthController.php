@@ -22,7 +22,12 @@ class AuthController extends Controller {
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            $errors = $validator->errors();
+            // Check if the email field has a unique constraint error
+            if ($errors->has('email')) {
+                return response()->json(['message' => 'El correo electrónico ya está registrado'], 400);
+            }
+            return response()->json($errors, 400);
         }
 
         // Verificación de la contraseña del administrador
@@ -181,22 +186,21 @@ class AuthController extends Controller {
         $request->validate([
             'admin_password' => 'required|string',
         ]);
-    
+
         // Verificación de la contraseña del administrador
         $adminPassword = env('ADMIN_PASSWORD', 'default_password');
         if ($request->admin_password !== $adminPassword) {
             return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
-    
+
         // Buscar el usuario por ID
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
-    
+
         // Eliminar el usuario
         $user->delete();
         return response()->json(['message' => 'Usuario eliminado con éxito']);
     }
-    
 }
