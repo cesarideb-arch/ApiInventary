@@ -78,15 +78,17 @@ class AuthController extends Controller {
                 $users->orWhere('role', 2);
             }
 
+            // Excluir los usuarios con rol 0
+            $users->where('role', '!=', 0);
+
             $users = $users->get();
         } else {
-            // Si no hay parámetro de búsqueda, obtener todos los usuarios
-            $users = User::latest()->get();
+            // Si no hay parámetro de búsqueda, obtener todos los usuarios excluyendo los roles 0
+            $users = User::where('role', '!=', 0)->latest()->get();
         }
 
         return response()->json($users);
     }
-
 
 
 
