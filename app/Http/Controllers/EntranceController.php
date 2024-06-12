@@ -13,7 +13,14 @@ class EntranceController extends Controller {
         $entrances = Entrance::with(['project', 'product'])->latest()->get();
         return response()->json($entrances);
     }
-
+  
+    public function GetCountMonthEntrance() {
+        $entrances = Entrance::with(['project', 'product'])
+            ->whereMonth('created_at', now()->month)
+            ->latest()
+            ->get();
+        return response()->json($entrances);
+    }
    
     public function GetProductEntrance() {
         // Obtener el producto con la mayor cantidad de entradas (sumando las cantidades)

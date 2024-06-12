@@ -14,6 +14,15 @@ class OutputController extends Controller {
         return response()->json($outputs);
     }
 
+    // GET the total number of outputs
+    public function GetCountMonthOutput() {
+        $outputs = Output::with(['product'])
+            ->whereMonth('created_at', now()->month)
+            ->latest()
+            ->get();
+        return response()->json($outputs);
+    }
+
     public function GetProductOutput() {
         // Obtener el producto con la mayor cantidad de salidas (sumando las cantidades)
         $productWithMostOutput = DB::table('outputs')

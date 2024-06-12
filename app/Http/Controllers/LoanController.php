@@ -16,6 +16,14 @@ class LoanController extends Controller {
         return response()->json($loans);
     }
 
+    public function GetCountMonthLoan() {
+        $loans = Loan::with(['product'])
+            ->whereMonth('created_at', now()->month)
+            ->latest()
+            ->get();
+        return response()->json($loans);
+    }
+
 
     public function GetProductLoan() {
         // Obtener el producto con la mayor cantidad de préstamos (sumando las cantidades)
