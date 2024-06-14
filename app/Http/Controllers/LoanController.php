@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Loan; // Import the Loan model class
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Product; // Import the Product model class
 use Illuminate\Support\Facades\DB; // Import the DB class
 
@@ -108,26 +109,36 @@ class LoanController extends Controller {
             'product_id' => 'required|exists:products,id',
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer',
+            'observations' => 'nullable|string', 
         ]);
-
+    
+        // Verificar que observations está presente en la solicitud
+        if ($request->has('observations')) {
+            Log::info('Observations field is present in the request: ' . $request->observations);
+        } else {
+            Log::info('Observations field is not present in the request.');
+        }
+    
         // Buscar el producto
         $product = Product::findOrFail($request->product_id);
-
+    
         // Verificar si hay suficiente cantidad disponible
         if ($product->quantity < $request->quantity) {
             return response()->json(['error' => 'No hay suficiente cantidad disponible. Cantidad disponible: ' . number_format($product->quantity, 0, '.', ',')], 400);
         }
-
+    
         // Deducción de la cantidad en la tabla de productos
         $product->quantity -= $request->quantity;
         $product->save();
-
-
+    
         // Crear el préstamo en la tabla de préstamos
-        $loan = Loan::create($request->all() + ['status' => 1]); // Use the Loan model class and set the status to 1
-
+        $loanData = $request->only(['product_id', 'responsible', 'quantity', 'observations']);
+        $loanData['status'] = 1;
+        $loan = Loan::create($loanData);
+    
         return response()->json($loan, 201);
     }
+    
 
 
     public function show($id) {

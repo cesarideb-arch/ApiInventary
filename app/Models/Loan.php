@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Loan extends Model
 {
-    protected $fillable = ['product_id', 'responsible', 'quantity', 'date', 'status'];
+    protected $fillable = ['product_id', 'responsible', 'quantity', 'date', 'status', 'observations'];
 
     public function product()
     {
