@@ -71,6 +71,7 @@ class EntranceController extends Controller {
                     ->orWhere('entrances.created_at', 'like', "%{$search}%")
                     ->orWhere('projects.name', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
+                    ->orWhere('products.location', 'like', "%{$search}%")
                     ->orWhere('entrances.project_id', 'like', "%{$search}%")
                     ->orWhere('entrances.product_id', 'like', "%{$search}%");
             });
