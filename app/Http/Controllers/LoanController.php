@@ -103,6 +103,11 @@ class LoanController extends Controller {
         $count = Loan::where('status', 1)->count();
         return response()->json(['count' => number_format($count, 0, '.', ',')]);
     }
+    public function getCountAll() {
+        $count = Loan::count();
+        return response()->json(['count' => number_format($count, 0, '.', ',')]);
+    }
+
 
     public function store(Request $request) {
         $request->validate([

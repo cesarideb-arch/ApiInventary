@@ -109,4 +109,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/searchLoan', [LoanController::class, 'SearchLoan']);
     Route::get('/GetProductLoan', [LoanController::class, 'GetProductLoan']);
     Route::get('/GetCountMonthLoan', [LoanController::class, 'GetCountMonthLoan']);
+    Route::get('/getCountAll', [LoanController::class, 'getCountAll']);
 });
