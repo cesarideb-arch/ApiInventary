@@ -77,6 +77,7 @@ class LoanController extends Controller {
                     ->orWhere('loans.updated_at', 'like', "%{$search}%")
                     ->orWhere('loans.observations', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
+                    ->orWhere('products.location', 'like', "%{$search}%")
                     ->orWhere('loans.product_id', 'like', "%{$search}%");
 
                 // Si se ha determinado un valor de status, agregarlo a la consulta

@@ -72,6 +72,7 @@ class OutputController extends Controller {
                     ->orWhere('outputs.created_at', 'like', "%{$search}%")
                     ->orWhere('projects.name', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
+                    ->orWhere('products.location', 'like', "%{$search}%")
                     ->orWhere('outputs.project_id', 'like', "%{$search}%")
                     ->orWhere('outputs.product_id', 'like', "%{$search}%");
             });
