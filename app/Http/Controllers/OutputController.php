@@ -52,6 +52,13 @@ class OutputController extends Controller {
         return response()->json(['count' => $outputsCount], 200);
     }
     
+    // GET the total number of outputs of the current month
+    public function GetOutputsCountMonthNumber() {
+        // Obtener la cantidad total de salidas del mes actual
+        $outputsCount = Output::whereMonth('created_at', now()->month)->count();
+
+        return response()->json(['count' => $outputsCount], 200);
+    }
 
     public function SearchOutput(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud

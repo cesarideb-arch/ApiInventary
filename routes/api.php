@@ -84,6 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/GetProductEntrance', [EntranceController::class, 'GetProductEntrance']);
     Route::get('/GetEntrancesCount', [EntranceController::class, 'GetEntrancesCount']);
     Route::get('/GetCountMonthEntrance', [EntranceController::class, 'GetCountMonthEntrance']);
+    Route::get('/GetEntrancesCountMonthNumber', [EntranceController::class, 'GetEntrancesCountMonthNumber']);
 
 
     // Rutas de salidas
@@ -96,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/GetProductOutput', [OutputController::class, 'GetProductOutput']);
     Route::get('/GetOutputsCount', [OutputController::class, 'GetOutputsCount']);
     Route::get('/GetCountMonthOutput', [OutputController::class, 'GetCountMonthOutput']);
+    Route::get('/GetOutputsCountMonthNumber', [OutputController::class, 'GetOutputsCountMonthNumber']);
 
 
     // Rutas de préstamos
@@ -113,5 +115,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getCountAll', [LoanController::class, 'getCountAll']);
     Route::get('/GetFinished', [LoanController::class, 'GetFinished']);
     Route::get('/GetStarted', [LoanController::class, 'GetStarted']);
+    Route::get('/GetLoanCountMonthNumber', [LoanController::class, 'GetLoanCountMonthNumber']);
 
 });

@@ -130,8 +130,14 @@ class LoanController extends Controller {
         return response()->json($loans);
     }
 
-    
 
+// Get the total number of loans of the current month
+public function GetLoanCountMonthNumber() {
+    // Obtener la cantidad total de préstamos del mes actual
+    $loansCount = Loan::whereMonth('created_at', now()->month)->count();
+
+    return response()->json(['count' => $loansCount], 200);
+}
 
     public function store(Request $request) {
         $request->validate([

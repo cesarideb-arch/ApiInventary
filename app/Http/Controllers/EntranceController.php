@@ -52,6 +52,14 @@ class EntranceController extends Controller {
         return response()->json(['count' => $entrancesCount], 200);
     }
 
+    public function GetEntrancesCountMonthNumber() {
+        // Obtener la cantidad total de entradas del mes actual
+        $entrancesCount = Entrance::whereMonth('created_at', now()->month)->count();
+
+        return response()->json(['count' => $entrancesCount], 200);
+    }
+
+
     public function SearchEntrance(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
