@@ -114,6 +114,25 @@ class LoanController extends Controller {
     }
 
 
+    public function GetFinished() {
+        $loans = Loan::with(['product'])
+            ->where('status', 0)
+            ->latest()
+            ->get();
+        return response()->json($loans);
+    }
+
+    public function GetStarted() {
+        $loans = Loan::with(['product'])
+            ->where('status', 1)
+            ->latest()
+            ->get();
+        return response()->json($loans);
+    }
+
+    
+
+
     public function store(Request $request) {
         $request->validate([
             'product_id' => 'required|exists:products,id',
