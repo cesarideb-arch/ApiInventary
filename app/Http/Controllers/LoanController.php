@@ -141,6 +141,7 @@ public function GetLoanCountMonthNumber() {
 
     public function store(Request $request) {
         $request->validate([
+            'project_id' => 'nullable|exists:projects,id',
             'product_id' => 'required|exists:products,id',
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer',
@@ -167,7 +168,7 @@ public function GetLoanCountMonthNumber() {
         $product->save();
     
         // Crear el préstamo en la tabla de préstamos
-        $loanData = $request->only(['product_id', 'responsible', 'quantity', 'observations']);
+        $loanData = $request->only(['product_id', 'responsible', 'quantity', 'observations', 'project_id']);
         $loanData['status'] = 1;
         $loan = Loan::create($loanData);
     
