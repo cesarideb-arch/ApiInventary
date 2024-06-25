@@ -13,12 +13,12 @@ class LoanController extends Controller {
 
 
     public function index() {
-        $loans = Loan::with(['product'])->latest()->get();
+        $loans = Loan::with(['project', 'product'])->latest()->get();
         return response()->json($loans);
     }
 
     public function GetCountMonthLoan() {
-        $loans = Loan::with(['product'])
+        $loans = Loan::with(['project', 'product'])
             ->whereMonth('created_at', now()->month)
             ->latest()
             ->get();
@@ -115,7 +115,7 @@ class LoanController extends Controller {
 
 
     public function GetFinished() {
-        $loans = Loan::with(['product'])
+        $loans = Loan::with(['project', 'product'])
             ->where('status', 0)
             ->latest()
             ->get();
@@ -123,7 +123,7 @@ class LoanController extends Controller {
     }
 
     public function GetStarted() {
-        $loans = Loan::with(['product'])
+        $loans = Loan::with(['project', 'product'])
             ->where('status', 1)
             ->latest()
             ->get();
