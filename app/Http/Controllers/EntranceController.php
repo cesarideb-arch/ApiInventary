@@ -110,6 +110,7 @@ class EntranceController extends Controller {
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer',
             'description' => 'nullable|string|max:100',
+            'Folio' => 'nullable|string|max:100'
         ]);
 
         // Actualizar la cantidad en la tabla de productos

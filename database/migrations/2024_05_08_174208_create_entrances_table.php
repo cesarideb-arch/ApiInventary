@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('responsible', 100);
             $table->integer('quantity');
             $table->string('description', 100)->nullable();
+            $table->string('Folio', 100)->nullable();
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
             $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
