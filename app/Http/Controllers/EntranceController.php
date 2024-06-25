@@ -110,17 +110,27 @@ class EntranceController extends Controller {
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer',
             'description' => 'nullable|string|max:100',
-            'folio' => 'nullable|string|max:100'
+            'folio' => 'nullable|string|max:100',
+            'price' => 'nullable|numeric'
         ]);
-
-        // Actualizar la cantidad en la tabla de productos
+    
+        // Obtener el producto de la base de datos
         $product = Product::findOrFail($request->product_id);
+    
+        // Usar el precio del producto si no se proporciona uno nuevo
+        $price = $request->price ?? $product->price;
+    
+        // Actualizar la cantidad en la tabla de productos
         $product->quantity += $request->quantity;
         $product->save();
-
-        // Crear la entrada en la tabla de entradas
-        $entrance = Entrance::create($request->all());
-
+    
+        // Crear la entrada en la tabla de entradas con el precio correcto
+        $entranceData = $request->all();
+        $entranceData['price'] = $price;
+    
+        $entrance = Entrance::create($entranceData);
+    
         return response()->json($entrance, 201);
     }
+    
 }
