@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
     class Entrance extends Model
     {
-        protected $fillable = ['project_id', 'responsible', 'quantity', 'date', 'description', 'product_id', 'Folio'];
+        protected $fillable = ['project_id', 'responsible', 'quantity', 'date', 'description', 'product_id', 'folio'];
     
         public function project()
         {
