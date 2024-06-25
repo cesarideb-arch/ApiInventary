@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Entrance;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class EntranceController extends Controller {
     // GET all entrances
@@ -21,7 +22,20 @@ class EntranceController extends Controller {
             ->get();
         return response()->json($entrances);
     }
-   
+
+     
+    public function getBetween(Request $request) {
+        $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
+        $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
+    
+        $entrances = Entrance::with(['project', 'product'])
+            ->whereBetween('created_at', [$start_date, $end_date])
+            ->latest()
+            ->get();
+    
+        return response()->json($entrances);
+    }
+
     public function GetProductEntrance() {
         // Obtener el producto con la mayor cantidad de entradas (sumando las cantidades)
         $productWithMostQuantity = DB::table('entrances')

@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/GetEntrancesCount', [EntranceController::class, 'GetEntrancesCount']);
     Route::get('/GetCountMonthEntrance', [EntranceController::class, 'GetCountMonthEntrance']);
     Route::get('/GetEntrancesCountMonthNumber', [EntranceController::class, 'GetEntrancesCountMonthNumber']);
+    Route::post('/getBetween', [EntranceController::class, 'getBetween']);
 
 
     // Rutas de salidas
