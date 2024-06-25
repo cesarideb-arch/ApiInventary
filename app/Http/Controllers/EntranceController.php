@@ -91,13 +91,18 @@ class EntranceController extends Controller {
                     ->orWhere('entrances.quantity', 'like', "%{$search}%")
                     ->orWhere('entrances.description', 'like', "%{$search}%")
                     ->orWhere('entrances.created_at', 'like', "%{$search}%")
+                    ->orWhere('entrances.folio', 'like', "%{$search}%")
+                    ->orWhere('entrances.price', 'like', "%{$search}%")
                     ->orWhere('projects.name', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
                     ->orWhere('products.location', 'like', "%{$search}%")
                     ->orWhere('entrances.project_id', 'like', "%{$search}%")
-                    ->orWhere('entrances.product_id', 'like', "%{$search}%");
+                    ->orWhere('entrances.product_id', 'like', "%{$search}%")
+                    ->orWhereRaw('REPLACE(FORMAT(entrances.price * entrances.quantity, 0), ",", "") like ?', ["%{$search}%"]);
+
             });
         }
+        
 
         // Ejecutar la consulta
         $entrances = $query->get();
