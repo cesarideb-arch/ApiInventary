@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product; // Import the Product model class
 use Illuminate\Support\Facades\DB; // Import the DB class
+use Carbon\Carbon; // Import the Carbon class
 
 class LoanController extends Controller {
 
@@ -24,7 +25,20 @@ class LoanController extends Controller {
             ->get();
         return response()->json($loans);
     }
+ 
+    
+      
+    public function PostBetweenLoan(Request $request) {
+        $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
+        $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
 
+        $loans = Loan::with(['project', 'product'])
+            ->whereBetween('created_at', [$start_date, $end_date])
+            ->latest()
+            ->get();
+
+        return response()->json($loans);
+    }
 
     public function GetProductLoan() {
         // Obtener el producto con la mayor cantidad de préstamos (sumando las cantidades)

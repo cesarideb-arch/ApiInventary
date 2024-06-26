@@ -99,6 +99,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/GetOutputsCount', [OutputController::class, 'GetOutputsCount']);
     Route::get('/GetCountMonthOutput', [OutputController::class, 'GetCountMonthOutput']);
     Route::get('/GetOutputsCountMonthNumber', [OutputController::class, 'GetOutputsCountMonthNumber']);
+    Route::post('/PostBetweenOutput', [OutputController::class, 'PostBetweenOutput']);
 
 
     // Rutas de préstamos
@@ -117,5 +118,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/GetFinished', [LoanController::class, 'GetFinished']);
     Route::get('/GetStarted', [LoanController::class, 'GetStarted']);
     Route::get('/GetLoanCountMonthNumber', [LoanController::class, 'GetLoanCountMonthNumber']);
+    Route::post('/PostBetweenLoan', [LoanController::class, 'PostBetweenLoan']);
 
 });

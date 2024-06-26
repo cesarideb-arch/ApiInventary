@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Output;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class OutputController extends Controller {
     // GET all outputs
@@ -58,6 +59,19 @@ class OutputController extends Controller {
         $outputsCount = Output::whereMonth('created_at', now()->month)->count();
 
         return response()->json(['count' => $outputsCount], 200);
+    }
+
+      
+    public function PostBetweenOutput(Request $request) {
+        $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
+        $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
+    
+        $outputs = Output::with(['project', 'product'])
+            ->whereBetween('created_at', [$start_date, $end_date])
+            ->latest()
+            ->get();
+    
+        return response()->json($outputs);
     }
 
     public function SearchOutput(Request $request) {
