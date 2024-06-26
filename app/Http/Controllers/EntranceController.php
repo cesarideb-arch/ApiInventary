@@ -24,7 +24,7 @@ class EntranceController extends Controller {
     }
 
      
-    public function getBetween(Request $request) {
+    public function PostBetween(Request $request) {
         $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
         $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
     
