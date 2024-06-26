@@ -11,6 +11,8 @@ use App\Http\Controllers\EntranceController;
 use App\Http\Controllers\OutputController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DatabaseController;
+
 
 /*
 |--------------------------------------------------------------------------
