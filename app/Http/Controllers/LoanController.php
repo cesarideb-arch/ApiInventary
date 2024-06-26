@@ -33,7 +33,7 @@ class LoanController extends Controller {
         $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
 
         $loans = Loan::with(['project', 'product'])
-            ->whereBetween('created_at', [$start_date, $end_date])
+            ->whereBetween('updated_at', [$start_date, $end_date])
             ->latest()
             ->get();
 
