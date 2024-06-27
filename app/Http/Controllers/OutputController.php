@@ -77,15 +77,34 @@ class OutputController extends Controller {
     public function SearchOutput(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
-
+    
         // Crear la consulta base con las relaciones
-        $query = Output::with(['project', 'product','user'])
+        $query = Output::with(['project', 'product', 'user'])
             ->leftJoin('projects', 'outputs.project_id', '=', 'projects.id')
             ->leftJoin('products', 'outputs.product_id', '=', 'products.id')
+            ->leftJoin('users', 'outputs.user_id', '=', 'users.id')
             ->select('outputs.*');
-
+    
         // Si el parámetro de búsqueda está presente, filtrar las salidas
         if ($search) {
+            $query->selectRaw("
+                (CASE WHEN outputs.responsible LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN outputs.quantity LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN outputs.description LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN outputs.created_at LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN projects.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN products.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN users.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN products.location LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN outputs.project_id LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN outputs.product_id LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN outputs.user_id LIKE ? THEN 1 ELSE 0 END
+                ) as relevance_score",
+                array_fill(0, 11, "%{$search}%")
+            )
+            ->having('relevance_score', '>', 0)
+            ->orderBy('relevance_score', 'desc');
+    
             $query->where(function ($q) use ($search) {
                 $q->where('outputs.responsible', 'like', "%{$search}%")
                     ->orWhere('outputs.quantity', 'like', "%{$search}%")
@@ -93,18 +112,19 @@ class OutputController extends Controller {
                     ->orWhere('outputs.created_at', 'like', "%{$search}%")
                     ->orWhere('projects.name', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
+                    ->orWhere('users.name', 'like', "%{$search}%")
                     ->orWhere('products.location', 'like', "%{$search}%")
                     ->orWhere('outputs.project_id', 'like', "%{$search}%")
-                    ->orWhere('outputs.product_id', 'like', "%{$search}%");
+                    ->orWhere('outputs.product_id', 'like', "%{$search}%")
+                    ->orWhere('outputs.user_id', 'like', "%{$search}%");
             });
         }
-
+    
         // Ejecutar la consulta
         $outputs = $query->get();
-
+    
         return response()->json($outputs);
-    }
-
+    }    
 
 
 

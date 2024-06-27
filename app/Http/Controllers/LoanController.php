@@ -65,18 +65,38 @@ class LoanController extends Controller {
     public function SearchLoan(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
-
+    
         // Crear la consulta base con las relaciones
-        $query = Loan::with(['product'])
-            ->join('products', 'loans.product_id', '=', 'products.id')
+        $query = Loan::with(['product', 'project', 'user'])
+            ->leftJoin('projects', 'loans.project_id', '=', 'projects.id')
+            ->leftJoin('products', 'loans.product_id', '=', 'products.id')
+            ->leftJoin('users', 'loans.user_id', '=', 'users.id')
             ->select('loans.*');
-
-        // Si el parámetro de búsqueda está presente, filtrar las entradas
+    
+        // Si el parámetro de búsqueda está presente, filtrar los préstamos
         if ($search) {
+            $query->selectRaw("
+                (CASE WHEN loans.responsible LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN loans.quantity LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN loans.created_at LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN loans.updated_at LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN loans.observations LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN products.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN products.location LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN users.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN projects.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN loans.product_id LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN loans.status = ? THEN 1 ELSE 0 END
+                ) as relevance_score",
+                array_merge(array_fill(0, 10, "%{$search}%"), [strtolower($search) === 'producto prestado' ? 1 : (strtolower($search) === 'producto regresado' ? 0 : -1)])
+            )
+            ->having('relevance_score', '>', 0)
+            ->orderBy('relevance_score', 'desc');
+    
             $query->where(function ($q) use ($search) {
                 // Convertir el texto de búsqueda a minúsculas para comparación
                 $searchLower = strtolower($search);
-
+    
                 // Determinar el valor del status basado en el texto de búsqueda
                 $statusValue = null;
                 if ($searchLower === 'producto prestado') {
@@ -84,7 +104,7 @@ class LoanController extends Controller {
                 } else if ($searchLower === 'producto regresado') {
                     $statusValue = 0;
                 }
-
+    
                 // Aplicar filtros a la consulta
                 $q->where('loans.responsible', 'like', "%{$search}%")
                     ->orWhere('loans.quantity', 'like', "%{$search}%")
@@ -92,9 +112,11 @@ class LoanController extends Controller {
                     ->orWhere('loans.updated_at', 'like', "%{$search}%")
                     ->orWhere('loans.observations', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
+                    ->orWhere('users.name', 'like', "%{$search}%")
+                    ->orWhere('projects.name', 'like', "%{$search}%")
                     ->orWhere('products.location', 'like', "%{$search}%")
                     ->orWhere('loans.product_id', 'like', "%{$search}%");
-
+    
                 // Si se ha determinado un valor de status, agregarlo a la consulta
                 if ($statusValue !== null) {
                     $q->orWhere('loans.status', $statusValue);
@@ -102,16 +124,16 @@ class LoanController extends Controller {
             });
         } else {
             // Si no hay parámetro de búsqueda, obtener todos los préstamos
-            $loans = Loan::with(['product'])->get();
+            $loans = Loan::with(['product', 'project', 'user'])->get();
             return response()->json($loans);
         }
-
+    
         // Ejecutar la consulta si hay un parámetro de búsqueda
         $loans = $query->get();
-
+    
         return response()->json($loans);
     }
-
+    
 
     public function getCount() {
         $count = Loan::where('status', 1)->count();
