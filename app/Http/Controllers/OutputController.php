@@ -122,9 +122,11 @@ class OutputController extends Controller {
         $request->validate([
             'project_id' => 'nullable|exists:projects,id',
             'product_id' => 'required|exists:products,id',
+            'user_id' => 'nullable|exists:users,id',
             'responsible' => 'required|string|max:100',
             'quantity' => 'required|integer|min:1',
             'description' => 'nullable|string|max:100',
+            'product_id' => 'required|exists:products,id',
         ]);
 
         // Buscar el producto
@@ -140,7 +142,7 @@ class OutputController extends Controller {
         $product->save();
 
         // Crear la salida en la tabla de salidas
-        $outputData = $request->only(['project_id', 'product_id', 'responsible', 'quantity', 'description']);
+        $outputData = $request->only(['project_id', 'product_id', 'responsible', 'quantity', 'description', 'user_id']);
 
         // Eliminar el campo 'project_id' si está vacío o nulo
         if (empty($outputData['project_id'])) {

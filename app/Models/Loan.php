@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Loan extends Model
 {
-    protected $fillable = ['product_id', 'responsible', 'quantity', 'date', 'status', 'observations', 'project_id'];
+    protected $fillable = ['product_id', 'responsible', 'quantity', 'date', 'status', 'observations', 'project_id', 'user_id'];
 
     public function project()
     {
@@ -14,6 +14,10 @@ class Loan extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
 

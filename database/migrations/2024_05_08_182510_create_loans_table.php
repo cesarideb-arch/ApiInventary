@@ -18,6 +18,7 @@ return new class extends Migration
                 $table->id();
                 $table->unsignedBigInteger('project_id')->nullable();
                 $table->unsignedBigInteger('product_id');
+                $table->unsignedBigInteger('user_id');
                 $table->string('responsible', 100);
                 $table->integer('quantity');
                 // $table->string('date', 100);
@@ -25,6 +26,7 @@ return new class extends Migration
                 $table->string('observations', 50)->nullable();
                 $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
                 $table->foreign('product_id')->references('id')->on('products');
+                $table->foreign('user_id')->references('id')->on('users');
                 $table->timestamps();
             });
         }

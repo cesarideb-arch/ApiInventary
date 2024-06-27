@@ -130,7 +130,9 @@ class EntranceController extends Controller {
             'quantity' => 'required|integer',
             'description' => 'nullable|string|max:100',
             'folio' => 'nullable|string|max:100',
-            'price' => 'nullable|numeric'
+            'price' => 'nullable|numeric',
+            'user_id' => 'nullable|exists:users,id'
+
         ]);
     
         // Obtener el producto de la base de datos

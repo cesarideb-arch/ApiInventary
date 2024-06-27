@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
     class Entrance extends Model
     {
-        protected $fillable = ['project_id', 'responsible', 'quantity', 'date', 'description', 'product_id', 'folio', 'price'];
+        protected $fillable = ['project_id', 'responsible', 'quantity', 'date', 'description', 'product_id', 'folio', 'price', 'user_id'];
     
         public function project()
         {
@@ -17,5 +17,9 @@ use Illuminate\Database\Eloquent\Model;
         public function product()
         {
             return $this->belongsTo(Product::class);
+        }
+        public function user()
+        {
+            return $this->belongsTo(User::class);
         }
     }
