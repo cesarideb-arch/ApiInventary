@@ -11,12 +11,12 @@ use Carbon\Carbon;
 class EntranceController extends Controller {
     // GET all entrances
     public function index() {
-        $entrances = Entrance::with(['project', 'product'])->latest()->get();
+        $entrances = Entrance::with(['project', 'product', 'user'])->latest()->get();
         return response()->json($entrances);
     }
   
     public function GetCountMonthEntrance() {
-        $entrances = Entrance::with(['project', 'product'])
+        $entrances = Entrance::with(['project', 'product', 'user'])
             ->whereMonth('created_at', now()->month)
             ->latest()
             ->get();
@@ -28,7 +28,7 @@ class EntranceController extends Controller {
         $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
         $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
     
-        $entrances = Entrance::with(['project', 'product'])
+        $entrances = Entrance::with(['project', 'product', 'user'])
             ->whereBetween('created_at', [$start_date, $end_date])
             ->latest()
             ->get();
@@ -114,7 +114,7 @@ class EntranceController extends Controller {
 
     // GET a single entrance by id
     public function show($id) {
-        $entrance = Entrance::with(['project', 'product'])->find($id);
+        $entrance = Entrance::with(['project', 'product','user'])->find($id);
         if (!$entrance) {
             return response()->json(['message' => 'Entrance not found'], 404);
         }
