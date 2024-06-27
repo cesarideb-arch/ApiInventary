@@ -11,7 +11,7 @@ use Carbon\Carbon;
 class OutputController extends Controller {
     // GET all outputs
     public function index() {
-        $outputs = Output::with(['project', 'product'])->latest()->get();
+        $outputs = Output::with(['project', 'product','user'])->latest()->get();
         return response()->json($outputs);
     }
 
@@ -66,7 +66,7 @@ class OutputController extends Controller {
         $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
         $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
     
-        $outputs = Output::with(['project', 'product'])
+        $outputs = Output::with(['project', 'product','user'])
             ->whereBetween('created_at', [$start_date, $end_date])
             ->latest()
             ->get();
@@ -79,7 +79,7 @@ class OutputController extends Controller {
         $search = $request->input('search');
 
         // Crear la consulta base con las relaciones
-        $query = Output::with(['project', 'product'])
+        $query = Output::with(['project', 'product','user'])
             ->leftJoin('projects', 'outputs.project_id', '=', 'projects.id')
             ->leftJoin('products', 'outputs.product_id', '=', 'products.id')
             ->select('outputs.*');
@@ -110,7 +110,7 @@ class OutputController extends Controller {
 
     // GET a single output by id
     public function show($id) {
-        $output = Output::with(['project', 'product'])->find($id);
+        $output = Output::with(['project', 'product','user'])->find($id);
         if (!$output) {
             return response()->json(['message' => 'Output not found'], 404);
         }

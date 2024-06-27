@@ -73,43 +73,64 @@ class EntranceController extends Controller {
         return response()->json(['count' => $entrancesCount], 200);
     }
 
-
     public function SearchEntrance(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud
         $search = $request->input('search');
-
+    
         // Crear la consulta base con las relaciones
-        $query = Entrance::with(['project', 'product'])
+        $query = Entrance::with(['project', 'product', 'user'])
             ->leftJoin('projects', 'entrances.project_id', '=', 'projects.id')
             ->leftJoin('products', 'entrances.product_id', '=', 'products.id')
+            ->leftJoin('users', 'entrances.user_id', '=', 'users.id')
             ->select('entrances.*');
-
+    
         // Si el parámetro de búsqueda está presente, filtrar las entradas
         if ($search) {
+            $query->selectRaw("
+                (CASE WHEN entrances.responsible LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.description LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.created_at LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.quantity LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.folio LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.price LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN projects.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN products.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN users.name LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN products.location LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.project_id LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.product_id LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN entrances.user_id LIKE ? THEN 1 ELSE 0 END +
+                CASE WHEN REPLACE(FORMAT(entrances.price * entrances.quantity, 0), ',', '') LIKE ? THEN 1 ELSE 0 END
+                ) as relevance_score",
+                array_fill(0, 14, "%{$search}%")
+            )
+            ->having('relevance_score', '>', 0)
+            ->orderBy('relevance_score', 'desc');
+    
             $query->where(function ($q) use ($search) {
                 $q->where('entrances.responsible', 'like', "%{$search}%")
-                    ->orWhere('entrances.quantity', 'like', "%{$search}%")
                     ->orWhere('entrances.description', 'like', "%{$search}%")
                     ->orWhere('entrances.created_at', 'like', "%{$search}%")
+                    ->orWhere('entrances.quantity', 'like', "%{$search}%")
                     ->orWhere('entrances.folio', 'like', "%{$search}%")
                     ->orWhere('entrances.price', 'like', "%{$search}%")
                     ->orWhere('projects.name', 'like', "%{$search}%")
                     ->orWhere('products.name', 'like', "%{$search}%")
+                    ->orWhere('users.name', 'like', "%{$search}%")
                     ->orWhere('products.location', 'like', "%{$search}%")
                     ->orWhere('entrances.project_id', 'like', "%{$search}%")
                     ->orWhere('entrances.product_id', 'like', "%{$search}%")
+                    ->orWhere('entrances.user_id', 'like', "%{$search}%")
                     ->orWhereRaw('REPLACE(FORMAT(entrances.price * entrances.quantity, 0), ",", "") like ?', ["%{$search}%"]);
-
             });
         }
-        
-
-        // Ejecutar la consulta
+    
+        // Obtener los resultados
         $entrances = $query->get();
-
+    
         return response()->json($entrances);
     }
-
+    
 
 
     // GET a single entrance by id

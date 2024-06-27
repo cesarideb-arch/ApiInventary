@@ -14,12 +14,12 @@ class LoanController extends Controller {
 
 
     public function index() {
-        $loans = Loan::with(['project', 'product'])->latest()->get();
+        $loans = Loan::with(['project', 'product','user'])->latest()->get();
         return response()->json($loans);
     }
 
     public function GetCountMonthLoan() {
-        $loans = Loan::with(['project', 'product'])
+        $loans = Loan::with(['project', 'product','user'])
             ->whereMonth('created_at', now()->month)
             ->latest()
             ->get();
@@ -32,7 +32,7 @@ class LoanController extends Controller {
         $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
         $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
 
-        $loans = Loan::with(['project', 'product'])
+        $loans = Loan::with(['project', 'product','user'])
             ->whereBetween('updated_at', [$start_date, $end_date])
             ->latest()
             ->get();
