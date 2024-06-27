@@ -2,11 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class DatabaseController extends Controller
 {
