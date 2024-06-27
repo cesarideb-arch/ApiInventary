@@ -10,6 +10,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "symfony/process": "^6.4",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {

@@ -27,6 +27,7 @@ use App\Http\Controllers\DatabaseController;
 
 // Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::get('/export-database', [DatabaseController::class, 'exportDatabase']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
@@ -121,5 +122,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/GetStarted', [LoanController::class, 'GetStarted']);
     Route::get('/GetLoanCountMonthNumber', [LoanController::class, 'GetLoanCountMonthNumber']);
     Route::post('/PostBetweenLoan', [LoanController::class, 'PostBetweenLoan']);
+
+
+    // Rutas de respaldos
+
+
 
 });
