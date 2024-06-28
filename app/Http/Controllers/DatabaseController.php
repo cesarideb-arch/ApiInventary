@@ -1,7 +1,6 @@
 <?php
-
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Request;
 
 class DatabaseController extends Controller
 {
@@ -49,4 +48,52 @@ class DatabaseController extends Controller
             echo "Backup created successfully at $filePath\n";
         }
     }
+    
+
+    public function importDatabase(Request $request)
+    {
+        $request->validate([
+            'database_file' => 'required|mimes:sql',
+        ]);
+    
+        // Handle the uploaded file
+        $file = $request->file('database_file');
+        $filePath = $file->getRealPath();
+    
+        $dbHost = env('DB_HOST', 'localhost');
+        $dbName = env('DB_DATABASE', 'api');
+        $dbUser = env('DB_USERNAME', 'root');
+        $dbPass = env('DB_PASSWORD', '');
+    
+        $mysqlPath = 'C:\\xampp\\mysql\\bin\\mysql.exe';
+    
+        // Prepare the command to import the database
+        $command = sprintf(
+            '"%s" --user=%s --password=%s --host=%s %s < "%s"',
+            $mysqlPath,
+            escapeshellarg($dbUser),
+            escapeshellarg($dbPass),
+            escapeshellarg($dbHost),
+            escapeshellarg($dbName),
+            $filePath
+        );
+    
+        // Execute the command
+        $output = null;
+        $returnVar = null;
+        exec($command, $output, $returnVar);
+    
+        // Handle the result
+        if ($returnVar !== 0) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Command failed', 
+                'output' => implode("\n", $output), 
+                'returnCode' => $returnVar
+            ], 500);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Database imported successfully!']);
+        }
+    }
+    
 }    

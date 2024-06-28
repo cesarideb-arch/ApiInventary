@@ -125,6 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de respaldos
     Route::get('/export-database', [DatabaseController::class, 'exportDatabase']);
+    Route::get('/import-database', [DatabaseController::class, 'importDatabase']);
 
 
 });
