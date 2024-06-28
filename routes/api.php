@@ -28,6 +28,7 @@ use App\Http\Controllers\DatabaseController;
 // Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('register', [AuthController::class, 'register']);
@@ -125,7 +126,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de respaldos
     Route::get('/export-database', [DatabaseController::class, 'exportDatabase']);
-    Route::get('/import-database', [DatabaseController::class, 'importDatabase']);
 
 
 });
