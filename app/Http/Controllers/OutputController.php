@@ -66,13 +66,14 @@ class OutputController extends Controller {
         $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
         $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
     
-        $outputs = Output::with(['project', 'product','user'])
+        $outputs = Output::with(['project', 'product', 'user'])
             ->whereBetween('created_at', [$start_date, $end_date])
-            ->latest()
+            ->orderBy('created_at', 'asc') // Cambia a orden ascendente
             ->get();
     
         return response()->json($outputs);
     }
+    
 
     public function SearchOutput(Request $request) {
         // Obtener el parámetro de búsqueda desde la solicitud

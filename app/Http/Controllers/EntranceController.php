@@ -30,11 +30,12 @@ class EntranceController extends Controller {
     
         $entrances = Entrance::with(['project', 'product', 'user'])
             ->whereBetween('created_at', [$start_date, $end_date])
-            ->latest()
+            ->orderBy('created_at', 'asc') // Cambia a orden ascendente
             ->get();
     
         return response()->json($entrances);
     }
+    
 
     public function GetProductEntrance() {
         // Obtener el producto con la mayor cantidad de entradas (sumando las cantidades)

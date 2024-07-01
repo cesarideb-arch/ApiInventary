@@ -31,14 +31,15 @@ class LoanController extends Controller {
     public function PostBetweenLoan(Request $request) {
         $start_date = Carbon::createFromFormat('d/m/Y', $request->input('start_date'))->startOfDay();
         $end_date = Carbon::createFromFormat('d/m/Y', $request->input('end_date'))->endOfDay();
-
-        $loans = Loan::with(['project', 'product','user'])
+    
+        $loans = Loan::with(['project', 'product', 'user'])
             ->whereBetween('updated_at', [$start_date, $end_date])
-            ->latest()
+            ->orderBy('updated_at', 'asc') // Cambia a orden ascendente
             ->get();
-
+    
         return response()->json($loans);
     }
+    
 
     public function GetProductLoan() {
         // Obtener el producto con la mayor cantidad de préstamos (sumando las cantidades)
