@@ -138,12 +138,13 @@ class AuthController extends Controller {
         return response()->json($user);
     }
 
+  
     public function update(Request $request, $id) {
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
-
+    
         // Validación de los datos de la solicitud
         $validator = Validator::make($request->all(), [
             'name' => 'string|max:255',
@@ -152,17 +153,22 @@ class AuthController extends Controller {
             'role' => 'string',
             'admin_password' => 'required|string'
         ]);
-
+    
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            $errors = $validator->errors();
+            // Check if the email field has a unique constraint error
+            if ($errors->has('email')) {
+                return response()->json(['message' => 'El correo electrónico ya está registrado'], 400);
+            }
+            return response()->json($errors, 400);
         }
-
+    
         // Verificación de la contraseña del administrador
         $adminPassword = env('ADMIN_PASSWORD', 'default_password');
         if ($request->admin_password !== $adminPassword) {
             return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
-
+    
         // Si se proporciona una nueva contraseña, encriptarla antes de actualizar
         if ($request->filled('password')) {
             $request->merge(['password' => Hash::make($request->password)]);
@@ -170,15 +176,13 @@ class AuthController extends Controller {
             // Si no se proporciona una nueva contraseña, eliminar el campo para no actualizarlo
             $request->request->remove('password');
         }
-
+    
         // Actualizar el usuario con los datos validados
         $user->update($request->except(['admin_password']));
-
+    
         return response()->json(['message' => 'Usuario actualizado exitosamente', 'user' => $user]);
     }
-
-
-
+    
     public function destroy(Request $request, $id) {
         // Validar que se proporcione la contraseña del administrador
         $request->validate([
