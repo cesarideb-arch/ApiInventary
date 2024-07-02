@@ -70,7 +70,7 @@ class AuthController extends Controller {
                     ->orWhere('email', 'like', '%' . $search . '%');
             });
 
-            if ($search === 'Admin Jefe') {
+            if ($search === 'Administrador Dueño') {
                 $users->orWhere('role', 0);
             } elseif ($search === 'Administrador Trabajador') {
                 $users->orWhere('role', 1);
