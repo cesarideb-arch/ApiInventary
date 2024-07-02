@@ -24,6 +24,7 @@ class SupplierController extends Controller {
                 ->orWhere('company', 'like', "%{$search}%")
                 ->orWhere('phone', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('price', 'like', "%{$search}%")
                 ->orWhere('address', 'like', "%{$search}%")
                 ->get();
         } else {
