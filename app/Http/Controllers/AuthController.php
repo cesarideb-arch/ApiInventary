@@ -70,24 +70,22 @@ class AuthController extends Controller {
                     ->orWhere('email', 'like', '%' . $search . '%');
             });
 
-            if ($search === 'Admin Trabajador') {
+            if ($search === 'Admin Jefe') {
+                $users->orWhere('role', 0);
+            } elseif ($search === 'Administrador Trabajador') {
                 $users->orWhere('role', 1);
             } elseif ($search === 'Trabajador') {
                 $users->orWhere('role', 2);
             }
 
-            // Excluir los usuarios con rol 0
-            $users->where('role', '!=', 0);
-
             $users = $users->get();
         } else {
-            // Si no hay parámetro de búsqueda, obtener todos los usuarios excluyendo los roles 0
-            $users = User::where('role', '!=', 0)->latest()->get();
+            // Si no hay parámetro de búsqueda, obtener todos los usuarios
+            $users = User::latest()->get();
         }
 
         return response()->json($users);
     }
-
 
 
     public function login(Request $request) {
