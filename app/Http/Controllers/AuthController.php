@@ -18,9 +18,9 @@ class AuthController extends Controller {
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|string',
-            'admin_password' => 'required_if:id,1|string' // Validate admin_password only if user ID is 1
+            'admin_password' => 'required' // Make admin_password required
         ]);
-
+    
         if ($validator->fails()) {
             $errors = $validator->errors();
             // Check if the email field has a unique constraint error
@@ -29,15 +29,13 @@ class AuthController extends Controller {
             }
             return response()->json($errors, 400);
         }
-
-        // Verificación de la contraseña del administrador solo si el ID del usuario es 1
-        if ($request->id == 1) {
-            $adminPassword = env('ADMIN_PASSWORD', 'default_password');
-            if ($request->admin_password !== $adminPassword) {
-                return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
-            }
+    
+        // Verificación de la contraseña del usuario con ID 1
+        $adminUser = User::find(1);
+        if (!$adminUser || !Hash::check($request->admin_password, $adminUser->password)) {
+            return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
-
+    
         // Creación del usuario
         $user = User::create([
             'name' => $request->name,
@@ -45,17 +43,17 @@ class AuthController extends Controller {
             'password' => Hash::make($request->password), // Asegúrate de usar Hash para encriptar la contraseña
             'role' => $request->role
         ]);
-
+    
         // Generación del token
         $token = $user->createToken('PersonalAccess')->plainTextToken;
-
+    
         return response()->json([
             'message' => 'Usuario registrado con éxito',
             'user' => $user,
             'token' => $token
         ], 201);
     }
-
+    
     public function index() {
         $users = User::latest()->get();
         return response()->json($users);
@@ -141,16 +139,16 @@ class AuthController extends Controller {
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
-
+    
         // Validación de los datos de la solicitud
         $validator = Validator::make($request->all(), [
             'name' => 'string|max:255',
             'email' => 'email|max:255|unique:users,email,' . $id,
             'password' => 'string|min:8|nullable', // 'nullable' permite que el campo sea opcional
             'role' => 'string',
-            'admin_password' => 'required_if:id,1|string' // Validate admin_password only if user ID is 1
+            'admin_password' => 'required|string' // Always validate admin_password
         ]);
-
+    
         if ($validator->fails()) {
             $errors = $validator->errors();
             // Check if the email field has a unique constraint error
@@ -159,15 +157,13 @@ class AuthController extends Controller {
             }
             return response()->json($errors, 400);
         }
-
-        // Verificación de la contraseña del administrador solo si el ID del usuario es 1
-        if ($user->id == 1) {
-            $adminPassword = env('ADMIN_PASSWORD', 'default_password');
-            if ($request->admin_password !== $adminPassword) {
-                return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
-            }
+    
+        // Verificación de la contraseña del administrador con ID 1
+        $adminUser = User::find(1);
+        if (!$adminUser || !Hash::check($request->admin_password, $adminUser->password)) {
+            return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
-
+    
         // Si se proporciona una nueva contraseña, encriptarla antes de actualizar
         if ($request->filled('password')) {
             $request->merge(['password' => Hash::make($request->password)]);
@@ -175,35 +171,34 @@ class AuthController extends Controller {
             // Si no se proporciona una nueva contraseña, eliminar el campo para no actualizarlo
             $request->request->remove('password');
         }
-
+    
         // Actualizar el usuario con los datos validados
         $user->update($request->except(['admin_password']));
-
+    
         return response()->json(['message' => 'Usuario actualizado exitosamente', 'user' => $user]);
     }
-
+     
     public function destroy(Request $request, $id) {
-        // Validar que se proporcione la contraseña del administrador solo si el ID del usuario es 1
+        // Validar que se proporcione la contraseña del administrador
         $request->validate([
-            'admin_password' => 'required_if:id,1|string'
+            'admin_password' => 'required|string'
         ]);
-
-        // Verificación de la contraseña del administrador solo si el ID del usuario es 1
-        if ($id == 1) {
-            $adminPassword = env('ADMIN_PASSWORD', 'default_password');
-            if ($request->admin_password !== $adminPassword) {
-                return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
-            }
+    
+        // Verificación de la contraseña del administrador con ID 1
+        $adminUser = User::find(1);
+        if (!$adminUser || !Hash::check($request->admin_password, $adminUser->password)) {
+            return response()->json(['message' => 'Contraseña de administrador incorrecta'], 401);
         }
-
+    
         // Buscar el usuario por ID
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
-
+    
         // Eliminar el usuario
         $user->delete();
         return response()->json(['message' => 'Usuario eliminado con éxito']);
     }
 }
+        
