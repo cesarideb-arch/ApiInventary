@@ -70,6 +70,7 @@ class ProductController extends Controller {
                     ->orWhere('products.price', 'LIKE', "%$search%")
                     ->orWhere('products.location', 'LIKE', "%$search%")
                     ->orWhere('products.description', 'LIKE', "%$search%")
+                    ->orWhere('products.observations', 'LIKE', "%$search%")
                     ->orWhere('products.quantity', 'LIKE', "%$search%")
                     ->orWhere('categories.name', 'LIKE', "%$search%")
                     ->orWhere('suppliers.company', 'LIKE', "%$search%");
