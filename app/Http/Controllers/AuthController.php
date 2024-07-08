@@ -18,8 +18,8 @@ class AuthController extends Controller {
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|string',
-            'admin_password' => 'required' // Make admin_password required
-        ]);
+            'admin_password' => 'required' // Make admin_password required free
+        ]); 
     
         if ($validator->fails()) {
             $errors = $validator->errors();
