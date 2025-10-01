@@ -20,7 +20,12 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $products = Product::with(['category', 'Supplier'])->latest()->get();
+        $products = Product::with(['category', 'Supplier'])
+            ->withCount(['loans' => function($query) {
+                $query->where('status', 1); // Solo préstamos activos
+            }])
+            ->latest()
+            ->get();
         return response()->json($products, 200);
     }
 
@@ -58,6 +63,9 @@ class ProductController extends Controller {
 
         // Crear la consulta base con las relaciones
         $query = Product::with(['category', 'supplier'])
+            ->withCount(['loans' => function($query) {
+                $query->where('status', 1); // Solo préstamos activos
+            }])
             ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
             ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->select('products.*');
@@ -142,7 +150,9 @@ class ProductController extends Controller {
 
 
     public function show($id) {
-        $product = Product::find($id);
+        $product = Product::withCount(['loans' => function($query) {
+            $query->where('status', 1); // Solo préstamos activos
+        }])->find($id);
         if (!$product) {
             return response()->json(['error' => 'Producto no encontrado'], 404);
         }

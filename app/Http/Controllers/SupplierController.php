@@ -20,8 +20,7 @@ class SupplierController extends Controller {
 
         // Si el parámetro de búsqueda está presente, filtrar las categorías
         if ($search) {
-            $suppliers = Supplier::where('article', 'like', "%{$search}%")
-                ->orWhere('company', 'like', "%{$search}%")
+            $suppliers = Supplier::where('company', 'like', "%{$search}%")
                 ->orWhere('phone', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
                 ->orWhere('price', 'like', "%{$search}%")
@@ -50,7 +49,6 @@ class SupplierController extends Controller {
     // POST a new supplier
     public function store(Request $request) {
         $request->validate([
-            'article' => 'required|string|max:255',
             'price' => 'required|numeric',
             'company' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
@@ -71,7 +69,6 @@ class SupplierController extends Controller {
         }
 
         $request->validate([
-            'article' => 'string|max:255',
             'price' => 'numeric',
             'company' => 'string|max:255',
             'phone' => 'string|max:255',

@@ -21,7 +21,7 @@ class UserSeed extends Seeder {
                 'name' => 'Admin',
                 'email' => 'Admin@gmail.com',
                 'email_verified_at' => null,
-                'password' => Hash::make($adminPassword), // Usar la contraseña del archivo .env
+                'password' => Hash::make($adminPassword), 
                 'role' => 0,
                 'remember_token' => null,
                 'created_at' => now(),

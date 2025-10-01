@@ -5,34 +5,50 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 
-class CategoryController extends Controller {
-    // GET all categories
-    public function index() {
-        $categories = Category::latest()->get();
-        return response()->json($categories);
+class CategoryController extends Controller
+{
+    // GET all categories with pagination
+    public function index(Request $request)
+    {
+        $perPage = $request->input('per_page', 100);
+        $categories = Category::latest()->paginate($perPage);
+        
+        return response()->json([
+            'data' => $categories->items(),
+            'total' => $categories->total(),
+            'current_page' => $categories->currentPage(),
+            'last_page' => $categories->lastPage(),
+            'per_page' => $categories->perPage()
+        ]);
     }
 
-
-
-    public function SearchCategory(Request $request) {
-        // Obtener el parámetro de búsqueda desde la solicitud
+    public function SearchCategory(Request $request)
+    {
         $search = $request->input('search');
+        $perPage = $request->input('per_page', 100);
 
-        // Si el parámetro de búsqueda está presente, filtrar las categorías
+        $query = Category::query();
+
         if ($search) {
-            $categories = Category::where('name', 'like', '%' . $search . '%')
+            $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('description', 'like', '%' . $search . '%')
-                ->get();
-        } else {
-            // Si no hay parámetro de búsqueda, obtener todas las categorías
-            $categories = Category::all();
+                ->orWhere('materials', 'like', '%' . $search . '%');
         }
 
-        return response()->json($categories);
+        $categories = $query->latest()->paginate($perPage);
+
+        return response()->json([
+            'data' => $categories->items(),
+            'total' => $categories->total(),
+            'current_page' => $categories->currentPage(),
+            'last_page' => $categories->lastPage(),
+            'per_page' => $categories->perPage()
+        ]);
     }
 
     // GET a single category by id
-    public function show($id) {
+    public function show($id)
+    {
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -41,10 +57,12 @@ class CategoryController extends Controller {
     }
 
     // POST a new category
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:100',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string|max:500',
+            'materials' => 'nullable|string|max:500'
         ]);
 
         $category = Category::create($request->all());
@@ -52,15 +70,17 @@ class CategoryController extends Controller {
     }
 
     // PUT or PATCH update a category
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
 
         $request->validate([
-            'name' => 'string|max:100',
-            'description' => 'nullable|string|max:500'
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:500',
+            'materials' => 'nullable|string|max:500'
         ]);
 
         $category->update($request->all());
@@ -68,15 +88,16 @@ class CategoryController extends Controller {
     }
 
     // DELETE a category
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
 
         // Verificar si la categoría está relacionada con otros registros
-        if ($category->products()->exists()) { // Cambia 'products' por la relación adecuada
-            return response()->json(['message' => 'La categoría está relacionada con productos y no puede ser eliminada'], 400);
+        if ($category->products()->exists()) {
+            return response()->json(['message' => 'La categoría está relacionada con productos y no puede ser eliminada'], 409);
         }
 
         $category->delete();

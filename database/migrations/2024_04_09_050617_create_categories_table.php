@@ -11,16 +11,17 @@ return new class extends Migration
      *
      * @return void
      */
-  
-     public function up()
-     {
-         Schema::create('categories', function (Blueprint $table) {
-             $table->id();
-             $table->string('name', 100);
-             $table->string('description', 500)->nullable();
-             $table->timestamps();
-         });
-     }
+    public function up()
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 100);
+            $table->string('description', 500)->nullable();
+            $table->string('materials', 500)->nullable(); // Campo agregado con punto y coma
+            $table->timestamps();
+        });
+    }
+
     /**
      * Reverse the migrations.
      *

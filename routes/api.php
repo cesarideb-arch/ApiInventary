@@ -124,8 +124,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/PostBetweenLoan', [LoanController::class, 'PostBetweenLoan']);
 
 
-    // Rutas de respaldos
-    Route::get('/export-database', [DatabaseController::class, 'exportDatabase']);
+    // Rutas de respaldos agregados 
+Route::get('/export-database', [DatabaseController::class, 'exportDatabase']);
+Route::post('/import-database', [DatabaseController::class, 'importDatabase']);
+Route::post('/reset-database', [DatabaseController::class, 'resetDatabase']);
+
+//Route::get('/download-backup/{fileName}', [DatabaseController::class, 'downloadBackup']);//
 
 
 });
