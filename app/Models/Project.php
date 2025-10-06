@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'description',
         'company_name',
         'rfc',
         'address',
+        'ubicacion',
         'phone_number',
         'email',
         'client_name',

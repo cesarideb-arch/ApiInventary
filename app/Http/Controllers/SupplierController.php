@@ -23,7 +23,6 @@ class SupplierController extends Controller {
             $suppliers = Supplier::where('company', 'like', "%{$search}%")
                 ->orWhere('phone', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
-                ->orWhere('price', 'like', "%{$search}%")
                 ->orWhere('address', 'like', "%{$search}%")
                 ->get();
         } else {
@@ -49,7 +48,6 @@ class SupplierController extends Controller {
     // POST a new supplier
     public function store(Request $request) {
         $request->validate([
-            'price' => 'required|numeric',
             'company' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -69,7 +67,6 @@ class SupplierController extends Controller {
         }
 
         $request->validate([
-            'price' => 'numeric',
             'company' => 'string|max:255',
             'phone' => 'string|max:255',
             'email' => 'nullable|email',

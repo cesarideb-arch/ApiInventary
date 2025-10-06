@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('company_name', 50);
             $table->string('rfc', 50)->nullable();
             $table->string('address', 100);
+            $table->string('ubicacion', 100)->nullable();
             $table->string('phone_number', 50);
             $table->string('email', 50);
             $table->string('client_name', 100);
