@@ -8,7 +8,10 @@ cmds = [
 ]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = [
+    "chmod -R 775 storage bootstrap/cache",
+    "npm run build"
+]
 
 [start]
-cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "sleep 20 && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
