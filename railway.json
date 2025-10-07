@@ -1,0 +1,10 @@
+{
+    "build": {
+        "builder": "heroku/buildpacks:20"
+    },
+    "deploy": {
+        "startCommand": "php artisan serve --host=0.0.0.0 --port=$PORT",
+        "buildCommand": "composer install --no-dev --optimize-autoloader && npm run build",
+        "runCommand": "php artisan optimize:clear && php artisan migrate --force"
+    }
+}
