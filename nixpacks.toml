@@ -12,7 +12,12 @@ cmds = [
 ]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = [
+    "php artisan config:clear",
+    "php artisan route:clear",
+    "php artisan view:clear",
+    "npm run build"
+]
 
 [start]
-cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "php -r \"try { \\$pdo = new PDO('mysql:host=mysql.railway.internal;port=3306;dbname=railway', 'root', 'ZFWAcAQLMqDvuJfCqSXKvAMnMmiTCIyS'); echo '✅ BD Conectada'; } catch (Exception \\$e) { echo '❌ Error BD: ' . \\$e->getMessage(); }\" && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
