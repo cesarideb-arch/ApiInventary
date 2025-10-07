@@ -1,0 +1,38 @@
+[phases.setup]
+nixPkgs = ["php82", "php82Packages.composer", "nodejs-18_x", "npm"]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader",
+    "npm ci"
+]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "php artisan serve --host=0.0.0[phases.setup]
+nixPkgs = [
+    "php82", 
+    "php82Packages.composer",
+    "nodejs-18_x", 
+    "npm",
+    "mysql.client"
+]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader --ignore-platform-reqs",
+    "npm ci"
+]
+
+[phases.build]
+cmds = [
+    "php artisan config:clear",
+    "php artisan route:clear",
+    "php artisan view:clear",
+    "npm run build"
+]
+
+[start]
+cmd = "php artisan config:cache && php artisan route:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT".0 --port=$PORT"
