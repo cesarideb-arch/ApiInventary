@@ -11,4 +11,4 @@ cmds = [
 cmds = ["npm run build"]
 
 [start]
-cmd = "php -r \"try { \\$pdo = new PDO('mysql:host=mysql.railway.internal;port=3306;dbname=railway', 'root', 'ZFWAcAQLMqDvuJfCqSXKvAMnMmiTCIyS'); echo '✅ CONEXIÓN EXITOSA'; } catch (Exception \\$e) { echo 'ERROR: ' . \\$e->getMessage(); }\" && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "chmod -R 775 storage bootstrap/cache && php artisan config:clear && php artisan cache:clear && php artisan view:clear && php artisan route:clear && php artisan storage:link && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
