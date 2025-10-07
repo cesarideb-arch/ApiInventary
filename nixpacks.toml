@@ -1,22 +1,99 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "nodejs-18_x"]
+nixPkgs = [
+    "php82", 
+    "php82Packages.composer", 
+    "nodejs-18_x", 
+    "mysql.client",
+    "iputils",
+    "dnsutils"
+]
 
 [phases.install]
 cmds = [
-    "echo '=== LIMPIANDO CACHE ==='",
+    # LIMPIEZA NUCLEAR DE CACHE
+    "echo '🧹 LIMPIANDO CACHE COMPLETAMENTE...'",
     "rm -rf bootstrap/cache/*.php",
-    "rm -rf storage/framework/cache/*.php",
-    "rm -f .env",
-    "echo '=== INSTALANDO DEPENDENCIAS ==='",
+    "rm -rf storage/framework/cache/*",
+    "rm -rf storage/framework/views/*",
+    "rm -rf storage/framework/sessions/*",
+    
+    # INSTALACIÓN
+    "echo '📦 INSTALANDO DEPENDENCIAS PHP...'",
     "composer install --no-dev --optimize-autoloader --ignore-platform-reqs",
+    "echo '📦 INSTALANDO DEPENDENCIAS NODE...'",
     "npm install"
 ]
 
 [phases.build]
 cmds = [
-    "echo '=== COMPILANDO FRONTEND ==='",
-    "npm run build"
+    "echo '🔨 COMPILANDO FRONTEND...'",
+    "npm run build",
+    
+    # LIMPIEZA POST-INSTALACIÓN
+    "echo '🧹 LIMPIANDO CACHE FINAL...'",
+    "php artisan config:clear",
+    "php artisan cache:clear",
+    "php artisan route:clear",
+    "php artisan view:clear"
 ]
 
 [start]
-cmd = "echo '🎯 INICIANDO APLICACIÓN LARAVEL' && echo '📁 CONTENIDO DE bootstrap/cache/:' && ls -la bootstrap/cache/ && echo '🔍 VARIABLES DE ENTORNO:' && php -r \"echo 'DB_HOST: ' . (getenv('DB_HOST') ?: '❌ NO DEFINIDO') . PHP_EOL; echo 'DB_DATABASE: ' . (getenv('DB_DATABASE') ?: '❌ NO DEFINIDO') . PHP_EOL; echo 'DB_USERNAME: ' . (getenv('DB_USERNAME') ?: '❌ NO DEFINIDO') . PHP_EOL; echo 'DB_PASSWORD: ' . (substr(getenv('DB_PASSWORD') ?: '❌ NO DEFINIDO', 0, 5) . '...') . PHP_EOL;\" && echo '⏳ ESPERANDO 40 SEGUNDOS PARA CONEXIÓN BD...' && sleep 40 && echo '🚀 EJECUTANDO MIGRACIONES...' && php artisan migrate --force && echo '✅ INICIANDO SERVIDOR LARAVEL' && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = """
+echo '🚀 INICIANDO DIAGNÓSTICO COMPLETO...'
+
+echo ''
+echo '🔍 1. VERIFICANDO CACHE...'
+ls -la bootstrap/cache/ || echo 'No hay archivos de cache'
+
+echo ''
+echo '🌐 2. VERIFICANDO CONECTIVIDAD DE RED...'
+echo 'Ping a mysql.railway.internal:'
+ping -c 2 mysql.railway.internal || echo 'Ping no disponible'
+echo 'Resolución DNS:'
+nslookup mysql.railway.internal || echo 'nslookup no disponible'
+echo 'Escaneo de puerto 3306:'
+timeout 3 bash -c 'echo > /dev/tcp/mysql.railway.internal/3306' && echo '✅ Puerto 3306 accesible' || echo '❌ Puerto 3306 inaccesible'
+
+echo ''
+echo '⚙️ 3. VERIFICANDO VARIABLES DE ENTORNO...'
+php -r "
+echo 'DB_HOST: ' . (getenv('DB_HOST') ?: '❌ NO DEFINIDO') . PHP_EOL;
+echo 'DB_PORT: ' . (getenv('DB_PORT') ?: '❌ NO DEFINIDO') . PHP_EOL; 
+echo 'DB_DATABASE: ' . (getenv('DB_DATABASE') ?: '❌ NO DEFINIDO') . PHP_EOL;
+echo 'DB_USERNAME: ' . (getenv('DB_USERNAME') ?: '❌ NO DEFINIDO') . PHP_EOL;
+echo 'DB_PASSWORD: ' . (getenv('DB_PASSWORD') ? substr(getenv('DB_PASSWORD'), 0, 5) . '...' : '❌ NO DEFINIDO') . PHP_EOL;
+"
+
+echo ''
+echo '🔌 4. TESTEANDO CONEXIÓN DIRECTA A BD...'
+php -r "
+try {
+    \\$host = getenv('DB_HOST') ?: 'mysql.railway.internal';
+    \\$port = getenv('DB_PORT') ?: '3306';
+    \\$dbname = getenv('DB_DATABASE') ?: 'railway';
+    \\$username = getenv('DB_USERNAME') ?: 'root';
+    \\$password = getenv('DB_PASSWORD') ?: 'ZFWAcAQLMqDvuJfCqSXKvAMnMmiTCIyS';
+    
+    \\$dsn = 'mysql:host=' . \\$host . ';port=' . \\$port . ';dbname=' . \\$dbname;
+    \\$pdo = new PDO(\\$dsn, \\$username, \\$password, [
+        PDO::ATTR_TIMEOUT => 10,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+    echo '✅ CONEXIÓN DIRECTA A BD EXITOSA';
+} catch (Exception \\$e) {
+    echo '❌ ERROR EN CONEXIÓN DIRECTA: ' . \\$e->getMessage();
+}
+"
+
+echo ''
+echo '⏳ 5. ESPERANDO 35 SEGUNDOS PARA ESTABILIZAR BD...'
+sleep 35
+
+echo ''
+echo '📊 6. EJECUTANDO MIGRACIONES...'
+php artisan migrate --force
+
+echo ''
+echo '🎯 7. INICIANDO SERVIDOR LARAVEL...'
+php artisan serve --host=0.0.0.0 --port=\$PORT
+"""
