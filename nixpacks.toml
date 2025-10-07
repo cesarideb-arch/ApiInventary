@@ -8,7 +8,10 @@ cmds = [
 ]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = [
+    "chmod -R 775 storage bootstrap/cache", 
+    "npm run build"
+]
 
 [start]
-cmd = "sleep 30 && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "sleep 30 && php -r \"try { \\$pdo = new PDO('mysql:host=' . getenv('MYSQLHOST') . ';dbname=' . getenv('MYSQLDATABASE'), getenv('MYSQLUSER'), getenv('MYSQLPASSWORD')); echo '✅ CONECTADO'; system('php artisan migrate --force'); } catch (Exception \\$e) { echo '❌ ERROR: ' . \\$e->getMessage(); }\" && php artisan serve --host=0.0.0.0 --port=$PORT"
