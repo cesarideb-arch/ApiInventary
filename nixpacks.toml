@@ -11,28 +11,4 @@ cmds = [
 cmds = ["npm run build"]
 
 [start]
-cmd = """
-echo "🚀 INICIANDO APLICACIÓN CON MIGRACIONES"
-
-# Primero probar conexión a BD
-php -r "
-try {
-    \\$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway', 'root', 'ZFWAcAQLMqDvuJfCqSXKvAMnMmiTCIyS', [
-        PDO::ATTR_TIMEOUT => 15,
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
-    echo '✅ CONEXIÓN A BD EXITOSA - EJECUTANDO MIGRACIONES...' . PHP_EOL;
-    
-    # Ejecutar migraciones
-    system('php artisan migrate --force');
-    echo '✅ MIGRACIONES COMPLETADAS' . PHP_EOL;
-    
-} catch (Exception \\$e) {
-    echo '❌ ERROR DE CONEXIÓN BD: ' . \\$e->getMessage() . PHP_EOL;
-    echo '⚠️  INICIANDO SIN MIGRACIONES' . PHP_EOL;
-}
-"
-
-# Iniciar servidor (con o sin migraciones)
-php artisan serve --host=0.0.0.0 --port=\$PORT
-"""
+cmd = "php -r \"try { new PDO('mysql:host=mysql.railway.internal;dbname=railway', 'root', 'ZFWAcAQLMqDvuJfCqSXKvAMnMmiTCIyS'); system('php artisan migrate --force'); echo 'MIGRACIONES EXITOSAS'; } catch (Exception \$e) { echo 'ERROR BD: ' . \$e->getMessage(); }\" && php artisan serve --host=0.0.0.0 --port=$PORT"
