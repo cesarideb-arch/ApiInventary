@@ -1,18 +1,30 @@
 #!/bin/bash
 
+# Mostrar variables de entorno para debugging
+echo "PORT: $PORT"
+echo "DATABASE_URL: $DATABASE_URL"
+
 # Limpiar cachés
 php artisan config:clear
+php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
-# Migraciones y seeders
+# Ejecutar migraciones
+echo "Ejecutando migraciones..."
 php artisan migrate --force
+
+# Ejecutar seeders
+echo "Ejecutando seeders..."
 php artisan db:seed --class=UserSeed --force
 
-# Regenerar cachés
+# Optimizar para producción
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Iniciar servidor
+# Verificar que el puerto esté disponible
+echo "Iniciando servidor en puerto: $PORT"
+
+# Iniciar servidor Laravel
 exec php artisan serve --host=0.0.0.0 --port=$PORT
