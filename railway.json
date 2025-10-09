@@ -1,11 +1,10 @@
 {
     "build": {
         "builder": "nixpacks",
-        "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate && php artisan config:cache && php artisan route:cache && php artisan view:cache",
-        "startCommand": "php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
+        "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate"
     },
     "deploy": {
-        "startCommand": "php artisan migrate --force && php artisan db:seed --class=UserSeed --force && php artisan serve --host=0.0.0.0 --port=$PORT",
-        "restartPolicy": "on-failure"
+        "startCommand": "php artisan migrate --force && php artisan db:seed --class=UserSeed --force && php -S 0.0.0.0:$PORT public/index.php",
+        "restartPolicy": "always"
     }
 }
