@@ -1,10 +1,10 @@
 {
     "build": {
         "builder": "nixpacks",
-        "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate"
+        "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate && chmod +x start-backend.sh"
     },
     "deploy": {
-        "startCommand": "php artisan migrate --force && php artisan db:seed --class=UserSeed --force && exec php -S 0.0.0.0:$PORT public/index.php",
+        "startCommand": "./start-backend.sh",
         "restartPolicy": "always"
     }
 }
