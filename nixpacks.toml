@@ -1,0 +1,11 @@
+[phpenv]
+extensions = ["curl", "mbstring", "openssl", "tokenizer", "xml", "json", "pdo", "pdo_mysql"]
+
+[build]
+buildCommand = "composer install --no-dev --optimize-autoloader && php artisan key:generate --force && php artisan storage:link"
+
+[start]
+startCommand = "./start-server.sh"
+
+[deploy]
+user = "root"
