@@ -10,13 +10,13 @@ return [
         'http://localhost:3000',
         'http://localhost:5173', 
         'http://localhost:8000',
-        'https://proyectoinventary-production-2098.up.railway.app',
-        'https://attractive-balance-production.up.railway.app',
+        'https://proyectoinventario.idebmexico.com', // TU FRONTEND
+        'https://apiinventario.idebmexico.com',      // TU BACKEND
     ],
 
     'allowed_origins_patterns' => [
-        'https://.*\.up\.railway\.app',
-        'http://localhost:\d+', // Cualquier puerto de localhost
+        'http://localhost:\d+',
+        'https://.*\.idebmexico\.com', // PATRÓN PARA TODOS TUS SUBDOMINIOS
     ],
 
     'allowed_headers' => ['*'],
