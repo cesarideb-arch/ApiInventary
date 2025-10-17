@@ -1,4 +1,5 @@
 <?php
+// ARCHIVO: config/cors.php EN TU BACKEND (apiinventario.idebmexico.com)
 
 return [
 
@@ -7,16 +8,11 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://localhost:3000',
-        'http://localhost:5173', 
-        'http://localhost:8000',
-        'https://proyectoinventario.idebmexico.com', // TU FRONTEND
-        'https://apiinventario.idebmexico.com',      // TU BACKEND
+        'https://proyectoinventario.idebmexico.com', // PERMITE TU FRONTEND
     ],
 
     'allowed_origins_patterns' => [
-        'http://localhost:\d+',
-        'https://.*\.idebmexico\.com', // PATRÓN PARA TODOS TUS SUBDOMINIOS
+        'https://.*\.idebmexico\.com', // PATRÓN PARA FUTUROS SUBDOMINIOS
     ],
 
     'allowed_headers' => ['*'],
