@@ -15,7 +15,11 @@ return [
     |
     */
 
+<<<<<<< HEAD
     'name' => env('APP_NAME', 'ApiInventary'),
+=======
+    'name' => env('APP_NAME', 'ApiInvetary'),
+>>>>>>> 575ba85f393a300544522234cefa8fba298f4341
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +58,11 @@ return [
     |
     */
 
+<<<<<<< HEAD
     'url' => env('APP_URL', 'https://apiinventario.idebmexico.com'),
+=======
+    'url' => env('APP_URL', 'http://localhost','https://proyectoinventario.idebmexico.com'),
+>>>>>>> 575ba85f393a300544522234cefa8fba298f4341
 
     'asset_url' => env('ASSET_URL'),
 
