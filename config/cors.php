@@ -8,11 +8,11 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'https://proyectoinventario.idebmexico.com', // PERMITE TU FRONTEND
+        'https://proyectoinventario.idebmexico.com', // ⬅️ FRONTEND que hace peticiones AL BACKEND
     ],
 
     'allowed_origins_patterns' => [
-        'https://.*\.idebmexico\.com', // PATRÓN PARA FUTUROS SUBDOMINIOS
+        'https://.*\.idebmexico\.com',
     ],
 
     'allowed_headers' => ['*'],
@@ -21,6 +21,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => true, // ✅ CORRECTO
 
 ];

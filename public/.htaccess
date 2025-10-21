@@ -5,9 +5,16 @@
 
     RewriteEngine On
 
-    # Handle Authorization Header
+    # Handle Authorization Header - FIX PARA CGI
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Pasar headers importantes para CGI
+    RewriteCond %{HTTP:Content-Type} .
+    RewriteRule .* - [E=CONTENT_TYPE:%{HTTP:Content-Type}]
+    
+    RewriteCond %{HTTP:Content-Length} .
+    RewriteRule .* - [E=CONTENT_LENGTH:%{HTTP:Content-Length}]
 
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -19,3 +26,8 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Configuraciones adicionales para CGI
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+SetEnvIf Content-Type "(.*)" HTTP_CONTENT_TYPE=$1
+SetEnvIf Content-Length "(.*)" HTTP_CONTENT_LENGTH=$1

@@ -1,5 +1,16 @@
 <?php
 
+// Configuración específica para CGI
+if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+    $_SERVER['CONTENT_TYPE'] = $_SERVER['HTTP_CONTENT_TYPE'];
+}
+if (isset($_SERVER['HTTP_CONTENT_LENGTH'])) {
+    $_SERVER['CONTENT_LENGTH'] = $_SERVER['HTTP_CONTENT_LENGTH'];
+}
+if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = $_SERVER['HTTP_AUTHORIZATION'];
+}
+
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 

@@ -11,7 +11,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
@@ -21,8 +21,11 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
+        // Fix para CGI - asegurar URLs correctas
+        if (php_sapi_name() == 'cgi-fcgi') {
+            \URL::forceRootUrl(config('app.url'));
+        }
     }
 }
